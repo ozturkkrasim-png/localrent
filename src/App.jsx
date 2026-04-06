@@ -125,10 +125,33 @@ const params = {
         .step.done-step { border-bottom-color: #2d8a47; color: #2d8a47; }
         input.sel { appearance: none; }
         .info-box { background: #f8fdf9; border: 1.5px solid #d0eeda; border-radius: 10px; padding: 16px 20px; }
+  @media (max-width: 768px) {
+    nav { padding: 12px 16px !important; }
+    nav > div:last-child { display: none !important; }
+    .top-bar { padding: 8px 16px !important; font-size: 11px !important; }
+    .hero { padding: 40px 16px 48px !important; }
+    .search-box { padding: 20px 16px !important; }
+    .search-grid { grid-template-columns: 1fr !important; }
+    .why-grid { grid-template-columns: 1fr 1fr !important; }
+    .cars-grid { grid-template-columns: 1fr !important; }
+    .features-grid { grid-template-columns: repeat(3,1fr) !important; }
+    .footer-inner { flex-direction: column !important; text-align: center; }
+    .booking-grid { grid-template-columns: 1fr !important; }
+    .about-grid { grid-template-columns: 1fr !important; }
+    .locations-grid { grid-template-columns: 1fr 1fr !important; }
+    .contact-grid { grid-template-columns: 1fr !important; }
+    .extras-grid { grid-template-columns: 1fr !important; }
+    .section-pad { padding: 40px 16px !important; }
+  }
+  @media (max-width: 480px) {
+    .why-grid { grid-template-columns: 1fr !important; }
+    .features-grid { grid-template-columns: repeat(2,1fr) !important; }
+    .locations-grid { grid-template-columns: 1fr !important; }
+  }
       `}</style>
 
       {/* TOP BAR */}
-      <div style={{ background: "#1a5c2a", color: "#fff", padding: "8px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13 }}>
+      <div className="top-bar" style={{ background: "#1a5c2a", color: "#fff", padding: "8px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13 }}>
         <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
           <a href={`tel:${PHONE}`} style={{ color: "#fff", textDecoration: "none", fontWeight: 700 }}>📞 {PHONE}</a>
           <a href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer" style={{ color: "#7fff9a", textDecoration: "none", fontWeight: 700 }}>💬 WhatsApp</a>
@@ -173,12 +196,12 @@ const params = {
             </p>
 
             {/* SEARCH BOX */}
-            <div style={{ background: "#fff", borderRadius: 16, padding: "28px 32px", boxShadow: "0 20px 60px rgba(0,0,0,0.2)", textAlign: "left" }}>
+            <div className="search-box" style={{ background: "#fff", borderRadius: 16, padding: "28px 32px", boxShadow: "0 20px 60px rgba(0,0,0,0.2)", textAlign: "left" }}>
               <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#666", marginBottom: 20, cursor: "pointer" }}>
                 <input type="checkbox" checked={!search.sameReturn} onChange={e => setS("sameReturn", !e.target.checked)} style={{ accentColor: "#2d8a47" }} />
                 Вернуть в другом месте
               </label>
-              <div style={{ display: "grid", gridTemplateColumns: search.sameReturn ? "2fr 1fr 1fr 1fr 1fr auto" : "1fr 1fr 1fr 1fr 1fr 1fr auto", gap: 12, alignItems: "end" }}>
+              <div className="search-grid" style={{ display: "grid", gridTemplateColumns: search.sameReturn ? "2fr 1fr 1fr 1fr 1fr auto" : "1fr 1fr 1fr 1fr 1fr 1fr auto", gap: 12, alignItems: "end" }}>
                 <div>
                   <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, letterSpacing: 1, textTransform: "uppercase" }}>Место получения</div>
                   <select className="sel" value={search.pickup} onChange={e => setS("pickup", e.target.value)}>
@@ -223,11 +246,11 @@ const params = {
 
 
         {/* WHY US */}
-        <div style={{ padding: "64px 48px", background: "#f9fdf9" }}>
+        <div className="section-pad" style={{ padding: "64px 48px", background: "#f9fdf9" }}>
           <div style={{ maxWidth: 960, margin: "0 auto" }}>
             <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, textAlign: "center", color: "#1a5c2a", marginBottom: 8 }}>Почему LocalRent?</h2>
             <p style={{ textAlign: "center", color: "#888", marginBottom: 48 }}>Мы работаем для вашего комфорта</p>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 28 }}>
+            <div className="why-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 28 }}>
               {[
                 ["🏷️", "Честные цены", "Никаких скрытых платежей. Цена финальная."],
                 ["🚗", "Новые авто", "Весь парк не старше 3 лет, всегда исправен."],
@@ -245,7 +268,7 @@ const params = {
         </div>
 
         {/* CARS PREVIEW */}
-        <div style={{ padding: "64px 48px" }}>
+        <div className="section-pad" style={{ padding: "64px 48px" }}>
           <div style={{ maxWidth: 1100, margin: "0 auto" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 36 }}>
               <div>
@@ -254,7 +277,7 @@ const params = {
               </div>
               <button className="outline-btn" onClick={() => setPage("cars")}>Все автомобили →</button>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
+            <div className="cars-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
               {cars.slice(0,3).map(car => (
                 <div key={car.id} className="car-card" onClick={() => { setSelectedCar(car); setPage("extras"); }}>
                   <img src={car.image} alt={car.name} style={{ width: "100%", height: 180, objectFit: "cover" }} onError={e => e.target.style.display="none"} />
@@ -291,7 +314,7 @@ const params = {
               Мы гарантируем конкурентные цены и высокий уровень обслуживания
             </h2>
             <div style={{ width: 60, height: 3, background: "rgba(255,255,255,0.5)", margin: "12px auto 48px" }} />
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 32 }}>
+            <div className="features-grid" style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 32 }}>
               {[
                 { icon: "🛡️", text: "Полное КАСКО без франшизы" },
                 { icon: "❤️", text: "Страхование от несчастных случаев" },
@@ -582,7 +605,7 @@ const params = {
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 48px" }}>
           <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 28, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Все автомобили</h2>
           <p style={{ color: "#888", marginBottom: 32 }}>Выберите подходящий вариант</p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
+          <div className="cars-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
             {cars.map(car => (
               <div key={car.id} className={`car-card ${selectedCar?.id === car.id ? "selected" : ""}`} onClick={() => setSelectedCar(car)}>
                 <img src={car.image} alt={car.name} style={{ width: "100%", height: 180, objectFit: "cover" }} onError={e => e.target.style.display="none"} />
