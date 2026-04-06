@@ -204,7 +204,7 @@ const params = {
               <div className="search-grid" style={{ display: "grid", gridTemplateColumns: search.sameReturn ? "2fr 1fr 1fr 1fr 1fr auto" : "1fr 1fr 1fr 1fr 1fr 1fr auto", gap: 12, alignItems: "end" }}>
                 <div>
                   <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, letterSpacing: 1, textTransform: "uppercase" }}>Место получения</div>
-                  <select className="sel" value={search.pickup} onChange={e => setS("pickup", e.target.value)}>
+                  <select aria-label="Место получения" className="sel" value={search.pickup} onChange={e => setS("pickup", e.target.value)}>
                     <option value="">Выберите локацию</option>
                     {cities.map(c => <option key={c}>{c}</option>)}
                   </select>
@@ -507,7 +507,7 @@ const params = {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
               <div>
                 <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Место получения</div>
-                <select className="sel" value={search.pickup} onChange={e => setS("pickup", e.target.value)}>
+                <select className="sel" id="pickup" aria-label="Место получения" value={search.pickup} onChange={e => setS("pickup", e.target.value)}>
                   <option value="">Выберите локацию</option>
                   {cities.map(c => <option key={c}>{c}</option>)}
                 </select>
