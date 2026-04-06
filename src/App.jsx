@@ -41,8 +41,9 @@ export default function App() {
   const [selectedExtras, setSelectedExtras] = useState([]);
   const [form, setForm] = useState({ name: "", surname: "", phone: "", email: "", flight: "", notes: "" });
   const [done, setDone] = useState(false);
+  const [reservationNo, setReservationNo] = useState("");
 
-  const sendEmail = (car, pickupDate, returnDate, days, total) => {
+  const sendEmail = (car, pickupDate, returnDate, days, total, resNo) => {
     if (typeof window.emailjs === "undefined") return;
     window.emailjs.init("NOP4w5U43oGZ4P0RS");
 const params = {
@@ -59,6 +60,7 @@ const params = {
       notes: form.notes || "-",
       message: "Новое бронирование от " + form.name,
       title: car.name,
+      reservation_no: resNo || "-",
     };
     // Admin'e mail
     window.emailjs.send("service_k60k4su", "template_508cxnq", params)
@@ -86,7 +88,11 @@ const params = {
       <div style={{ background: "#fff", borderRadius: 16, padding: "56px 48px", textAlign: "center", maxWidth: 480, boxShadow: "0 8px 40px rgba(0,0,0,0.1)" }}>
         <div style={{ fontSize: 72, marginBottom: 20 }}>✅</div>
         <h2 style={{ fontFamily: "Montserrat, sans-serif", fontSize: 28, color: "#1a5c2a", marginBottom: 12 }}>Бронирование подтверждено!</h2>
-        <p style={{ color: "#666", lineHeight: 1.7, marginBottom: 28 }}>Детали отправлены на <b>{form.email}</b>.<br />Мы свяжемся с вами в течение 30 минут.</p>
+        <div style={{ background: "#f0f9f3", border: "2px solid #2d8a47", borderRadius: 10, padding: "16px 24px", marginBottom: 20 }}>
+          <div style={{ fontSize: 12, color: "#888", marginBottom: 4 }}>НОМЕР БРОНИРОВАНИЯ</div>
+          <div style={{ fontFamily: "Montserrat,sans-serif", fontSize: 28, fontWeight: 900, color: "#1a5c2a", letterSpacing: 2 }}>{reservationNo}</div>
+        </div>
+        <p style={{ color: "#666", lineHeight: 1.7, marginBottom: 28 }}>Детали и номер бронирования отправлены на <b>{form.email}</b>.<br />Мы свяжемся с вами в течение 30 минут.</p>
         <button onClick={() => { setDone(false); setPage("home"); setSelectedCar(null); setSelectedExtras([]); }} style={{ background: "#2d8a47", color: "#fff", border: "none", borderRadius: 8, padding: "14px 36px", fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
           На главную
         </button>
@@ -672,7 +678,7 @@ const params = {
               </div>
               <button className="green-btn" style={{ width: "100%", marginTop: 24, padding: 16, fontSize: 16 }}
                 disabled={!form.name || !form.email || !form.phone}
-                onClick={() => { sendEmail(selectedCar, search.pickupDate, search.returnDate, days, total); setDone(true); }}
+                onClick={() => { const resNo = "LR-" + Date.now().toString().slice(-6); setReservationNo(resNo); sendEmail(selectedCar, search.pickupDate, search.returnDate, days, total, resNo); setDone(true); }}
                 style={{ width: "100%", marginTop: 24, padding: 16, fontSize: 16, background: form.name && form.email && form.phone ? "#2d8a47" : "#ccc", color: "#fff", border: "none", borderRadius: 8, fontFamily: "Nunito,sans-serif", fontWeight: 700, cursor: form.name && form.email && form.phone ? "pointer" : "not-allowed" }}>
                 ✅ Подтвердить бронирование
               </button>
