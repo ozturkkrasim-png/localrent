@@ -251,7 +251,7 @@ export default function App() {
         </div>
 
         {/* FEATURES SECTION */}
-        <div style={{ background: "#0099cc", padding: "60px 48px" }}>
+        <div style={{ background: "#1a5c2a", padding: "60px 48px" }}>
           <div style={{ maxWidth: 1000, margin: "0 auto" }}>
             <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 24, fontWeight: 900, color: "#fff", textAlign: "center", marginBottom: 8 }}>
               Мы гарантируем конкурентные цены и высокий уровень обслуживания
