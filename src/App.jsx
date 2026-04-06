@@ -42,6 +42,26 @@ export default function App() {
   const [form, setForm] = useState({ name: "", surname: "", phone: "", email: "", flight: "", notes: "" });
   const [done, setDone] = useState(false);
 
+  const sendEmail = (car, pickupDate, returnDate, days, total) => {
+    if (typeof window.emailjs === "undefined") return;
+    window.emailjs.init("NOP4w5U43oGZ4P0RS");
+    window.emailjs.send("service_k60k4su", "template_508cxnq", {
+      from_name: form.name + " " + form.surname,
+      name: form.name + " " + form.surname,
+      phone: form.phone,
+      email: form.email,
+      car_name: car.name,
+      pickup_date: pickupDate || "-",
+      return_date: returnDate || "-",
+      pickup_location: search.pickup || "-",
+      total: total ? "$" + total : "$" + car.price,
+      flight: form.flight || "-",
+      notes: form.notes || "-",
+      message: "Новое бронирование от " + form.name,
+      title: car.name,
+    }).then(() => console.log("Email sent!")).catch(e => console.error(e));
+  };
+
   const days = search.pickupDate && search.returnDate
     ? Math.max(1, Math.ceil((new Date(search.returnDate) - new Date(search.pickupDate)) / 86400000))
     : null;
@@ -644,7 +664,7 @@ export default function App() {
               </div>
               <button className="green-btn" style={{ width: "100%", marginTop: 24, padding: 16, fontSize: 16 }}
                 disabled={!form.name || !form.email || !form.phone}
-                onClick={() => setDone(true)}
+                onClick={() => { sendEmail(selectedCar, search.pickupDate, search.returnDate, days, total); setDone(true); }}
                 style={{ width: "100%", marginTop: 24, padding: 16, fontSize: 16, background: form.name && form.email && form.phone ? "#2d8a47" : "#ccc", color: "#fff", border: "none", borderRadius: 8, fontFamily: "Nunito,sans-serif", fontWeight: 700, cursor: form.name && form.email && form.phone ? "pointer" : "not-allowed" }}>
                 ✅ Подтвердить бронирование
               </button>
