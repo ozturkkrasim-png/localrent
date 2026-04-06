@@ -113,7 +113,7 @@ export default function App() {
           <span style={{ fontSize: 11, color: "#999", fontFamily: "Nunito,sans-serif", fontWeight: 600, marginLeft: 10, letterSpacing: 2 }}>TÜRKİYE</span>
         </div>
         <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
-          {[["Автомобили", "cars"], ["Локации", "home"], ["Условия", "terms"], ["Бронирование", "booking"], ["О нас", "home"], ["Контакты", "home"]].map(([label, pg]) => (
+          {[["Автомобили", "cars"], ["Локации", "locations"], ["Условия", "terms"], ["Бронирование", "booking"], ["О нас", "about"], ["Контакты", "contact"]].map(([label, pg]) => (
             <span key={label} onClick={() => pg === "booking" && selectedCar ? setPage("booking") : setPage(pg)} style={{ fontSize: 14, fontWeight: 700, color: page === pg ? "#2d8a47" : "#444", cursor: "pointer", transition: "color .2s" }}
               onMouseEnter={e => e.target.style.color = "#2d8a47"}
               onMouseLeave={e => e.target.style.color = page === "home" ? "#444" : "#2d8a47"}
@@ -265,6 +265,144 @@ export default function App() {
         </footer>
       </>}
 
+
+
+      {page === "about" && (
+        <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>О нас</h1>
+          <p style={{ color: "#888", marginBottom: 40 }}>Мы — местная компания по аренде автомобилей в Турции</p>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, marginBottom: 48 }}>
+            <div>
+              <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 22, fontWeight: 800, color: "#1a5c2a", marginBottom: 16 }}>Наша история</h2>
+              <p style={{ fontSize: 15, color: "#555", lineHeight: 1.8, marginBottom: 16 }}>
+                LocalRent — местная компания по аренде автомобилей, основанная в 2012 году в Анталье. 
+                За более чем 12 лет работы мы помогли тысячам туристов со всего мира исследовать 
+                красоту Турции за рулём надёжного автомобиля.
+              </p>
+              <p style={{ fontSize: 15, color: "#555", lineHeight: 1.8, marginBottom: 16 }}>
+                Мы сами много путешествовали по разным странам мира и прекрасно понимаем, 
+                что значит быть туристом. Поэтому наш главный приоритет — сделать аренду 
+                автомобиля максимально простой, прозрачной и комфортной.
+              </p>
+              <p style={{ fontSize: 15, color: "#555", lineHeight: 1.8 }}>
+                Зная, что выбор арендного автомобиля может быть непростой задачей, 
+                мы всегда готовы помочь вам сделать правильный выбор. Поддержка на русском языке — 24/7.
+              </p>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              {[
+                ["12+", "лет на рынке"],
+                ["5000+", "довольных клиентов"],
+                ["6", "моделей автомобилей"],
+                ["24/7", "поддержка на русском"],
+              ].map(([num, label]) => (
+                <div key={label} style={{ background: "#f0f9f3", border: "1.5px solid #d0eeda", borderRadius: 12, padding: "20px 24px", display: "flex", alignItems: "center", gap: 20 }}>
+                  <div style={{ fontFamily: "Montserrat,sans-serif", fontSize: 36, fontWeight: 900, color: "#2d8a47" }}>{num}</div>
+                  <div style={{ fontSize: 15, color: "#555", fontWeight: 600 }}>{label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ background: "#f9fdf9", border: "1.5px solid #d0eeda", borderRadius: 14, padding: "32px 36px" }}>
+            <h3 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 18, fontWeight: 800, color: "#1a5c2a", marginBottom: 20 }}>Почему клиенты выбирают нас</h3>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              {[
+                ["✅", "Честные цены без скрытых комиссий"],
+                ["✅", "Новые автомобили не старше 3 лет"],
+                ["✅", "Полная страховка включена"],
+                ["✅", "Бесплатная доставка в аэропорт Анталья"],
+                ["✅", "Поддержка на русском языке 24/7"],
+                ["✅", "Бесплатный второй водитель"],
+                ["✅", "Неограниченный пробег"],
+                ["✅", "Замена автомобиля при поломке"],
+              ].map(([ic, text]) => (
+                <div key={text} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 14, color: "#444" }}>
+                  <span style={{ color: "#2d8a47", fontWeight: 700 }}>{ic}</span> {text}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {page === "locations" && (
+        <div style={{ maxWidth: 960, margin: "0 auto", padding: "40px 48px" }}>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Локации выдачи</h1>
+          <p style={{ color: "#888", marginBottom: 40 }}>Мы доставим автомобиль в любую точку — аэропорт, отель или офис</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20, marginBottom: 40 }}>
+            {[
+              { city: "Анталья", icon: "✈️", locations: ["Аэропорт Анталья (AYT)", "Центр Анталья", "Старый город Калейчи", "Лара", "Коньяалты"] },
+              { city: "Кемер", icon: "🏖️", locations: ["Центр Кемер", "Бельдиби", "Гёйнюк", "Кириш", "Чамьюва"] },
+              { city: "Алания", icon: "🏰", locations: ["Центр Алания", "Авсаллар", "Окурджалар", "Махмутлар", "Газипаша"] },
+              { city: "Бодрум", icon: "⛵", locations: ["Аэропорт Бодрум (BJV)", "Центр Бодрум", "Турбукю", "Яликавак", "Гюмюшлюк"] },
+              { city: "Мармарис", icon: "🌊", locations: ["Центр Мармарис", "Ичмелер", "Армутлан", "Датча", "Бозбурун"] },
+              { city: "Фетхие", icon: "🪂", locations: ["Центр Фетхие", "Олюдениз", "Хисаранью", "Каякёй", "Гёчек"] },
+            ].map(({ city, icon, locations }) => (
+              <div key={city} style={{ background: "#fff", border: "1.5px solid #e8f5ec", borderRadius: 14, padding: "24px", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
+                <div style={{ fontSize: 32, marginBottom: 10 }}>{icon}</div>
+                <h3 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 17, fontWeight: 800, color: "#1a5c2a", marginBottom: 12 }}>{city}</h3>
+                {locations.map(loc => (
+                  <div key={loc} style={{ fontSize: 13, color: "#666", padding: "5px 0", borderBottom: "1px solid #f0f0f0", display: "flex", alignItems: "center", gap: 6 }}>
+                    <span style={{ color: "#2d8a47", fontSize: 10 }}>●</span> {loc}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+          <div style={{ background: "#1a5c2a", borderRadius: 14, padding: "28px 36px", color: "#fff", textAlign: "center" }}>
+            <div style={{ fontSize: 24, marginBottom: 8 }}>📞</div>
+            <p style={{ fontSize: 16, fontWeight: 700, marginBottom: 6 }}>Не нашли свою локацию?</p>
+            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", marginBottom: 16 }}>Свяжитесь с нами — мы доставим автомобиль куда угодно!</p>
+            <a href={"https://wa.me/905400070095"} target="_blank" rel="noreferrer" style={{ background: "#25d366", color: "#fff", textDecoration: "none", borderRadius: 8, padding: "12px 28px", fontWeight: 700, fontSize: 14 }}>
+              💬 Написать в WhatsApp
+            </a>
+          </div>
+        </div>
+      )}
+
+      {page === "contact" && (
+        <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Контакты</h1>
+          <p style={{ color: "#888", marginBottom: 40 }}>Мы всегда на связи — напишите или позвоните нам</p>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              {[
+                { icon: "📞", title: "Телефон", value: "+90 540 007 00 95", href: "tel:+905400070095" },
+                { icon: "💬", title: "WhatsApp", value: "+90 540 007 00 95", href: "https://wa.me/905400070095" },
+                { icon: "📸", title: "Instagram", value: "@localrent.com.tr", href: "https://instagram.com/localrent.com.tr" },
+                { icon: "✉️", title: "Email", value: "info@localrent.com.tr", href: "mailto:info@localrent.com.tr" },
+                { icon: "📍", title: "Адрес", value: "Анталья, Турция", href: null },
+                { icon: "🕐", title: "Режим работы", value: "Пн–Вс: 08:00 – 22:00", href: null },
+              ].map(({ icon, title, value, href }) => (
+                <div key={title} style={{ display: "flex", alignItems: "center", gap: 16, background: "#f9fdf9", border: "1.5px solid #e8f5ec", borderRadius: 10, padding: "16px 20px" }}>
+                  <span style={{ fontSize: 28 }}>{icon}</span>
+                  <div>
+                    <div style={{ fontSize: 12, color: "#999", fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 }}>{title}</div>
+                    {href ? <a href={href} target="_blank" rel="noreferrer" style={{ fontSize: 15, color: "#2d8a47", fontWeight: 700, textDecoration: "none" }}>{value}</a>
+                    : <div style={{ fontSize: 15, color: "#333", fontWeight: 600 }}>{value}</div>}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ background: "#f9fdf9", border: "1.5px solid #e8f5ec", borderRadius: 14, padding: "28px" }}>
+              <h3 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 18, fontWeight: 800, color: "#1a5c2a", marginBottom: 20 }}>Написать нам</h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                {[["Имя", "text", "Ваше имя"], ["Email", "email", "your@email.com"], ["Телефон", "tel", "+7 999 ..."]].map(([label, type, ph]) => (
+                  <div key={label}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 5, textTransform: "uppercase", letterSpacing: 0.5 }}>{label}</div>
+                    <input type={type} placeholder={ph} className="sel" />
+                  </div>
+                ))}
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 5, textTransform: "uppercase", letterSpacing: 0.5 }}>Сообщение</div>
+                  <textarea placeholder="Ваш вопрос..." className="sel" style={{ resize: "vertical", minHeight: 90 }} />
+                </div>
+                <button className="green-btn" style={{ width: "100%" }}>Отправить сообщение</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {page === "terms" && (
         <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
