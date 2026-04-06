@@ -199,7 +199,7 @@ export default function App() {
           <span style={{ fontSize: 11, color: "#999", fontFamily: "Nunito,sans-serif", fontWeight: 600, marginLeft: 10, letterSpacing: 2 }}>TÜRKİYE</span>
         </div>
         <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
-          {[["Автомобили", "cars"], ["Локации", "locations"], ["Условия", "terms"], ["Бронирование", "reservation"], ["Блог", "blog"], ["О нас", "about"], ["Контакты", "contact"]].map(([label, pg]) => (
+          {[["Автомобили", "cars"], ["Локации", "locations"], ["Условия", "terms"], ["Бронирование", "reservation"], ["Блог", "blog"], ["ЧаВо", "faq"], ["О нас", "about"], ["Контакты", "contact"]].map(([label, pg]) => (
             <span key={label} onClick={() => setPage(pg)} style={{ fontSize: 14, fontWeight: 700, color: page === pg ? "#2d8a47" : "#444", cursor: "pointer", transition: "color .2s" }}
               onMouseEnter={e => e.target.style.color = "#2d8a47"}
               onMouseLeave={e => e.target.style.color = page === pg ? "#2d8a47" : "#444"}
@@ -453,6 +453,39 @@ export default function App() {
         </div>
       ))}
 
+     {/* FAQ PAGE */}
+      {page === "faq" && (
+        <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Часто задаваемые вопросы</h1>
+          <p style={{ color: "#888", marginBottom: 40 }}>Ответы на самые популярные вопросы об аренде авто</p>
+          {[
+            { q: "Какие документы нужны для аренды?", a: "Для аренды автомобиля необходимы действующее водительское удостоверение (стаж от 1 года) и паспорт. Для граждан стран, не подписавших Венскую конвенцию, потребуется международное водительское удостоверение." },
+            { q: "Есть ли скрытые платежи?", a: "Нет. Наши цены окончательные и включают все налоги, страховку и услуги. Никаких дополнительных комиссий при получении или возврате автомобиля." },
+            { q: "Можно ли оплатить наличными?", a: "Да, мы принимаем оплату как наличными, так и банковской картой. Залог и предоплата не требуются." },
+            { q: "Доставляете ли вы авто в аэропорт?", a: "Да, мы бесплатно доставляем автомобиль в аэропорт Анталья (AYT), а также в любой отель или указанный адрес. При возврате также можем забрать машину у вас." },
+            { q: "Что входит в страховку?", a: "Полное КАСКО без франшизы, страхование от угона и пожара, покрытие шин, стёкол, зеркал и днища. Также включено страхование от несчастных случаев для всех пассажиров." },
+            { q: "Можно ли взять второго водителя?", a: "Да, второй водитель добавляется бесплатно. Все водители должны иметь действующее водительское удостоверение." },
+            { q: "Есть ли ограничение по пробегу?", a: "Нет, пробег неограниченный. Вы можете ездить столько, сколько нужно, без дополнительной оплаты." },
+            { q: "Что делать если машина сломалась?", a: "Звоните на наш номер 24/7. Мы окажем помощь на дороге и при необходимости заменим автомобиль бесплатно." },
+            { q: "Можно ли отменить бронирование?", a: "Да. Отмена за 7 и более дней — полный возврат средств. Отмена менее чем за 7 дней — удерживается 10% от суммы. Отмена после времени доставки — оплата за 3 дня аренды." },
+            { q: "Как забронировать автомобиль?", a: "Выберите автомобиль на сайте и заполните форму бронирования, или напишите нам в WhatsApp. Мы ответим в течение 30 минут и подтвердим бронирование." },
+          ].map((item, i) => (
+            <div key={i} style={{ borderBottom: "1px solid #eee", paddingBottom: 24, marginBottom: 24 }}>
+              <div style={{ fontFamily: "Montserrat,sans-serif", fontSize: 16, fontWeight: 800, color: "#1a5c2a", marginBottom: 10, display: "flex", gap: 12, alignItems: "flex-start" }}>
+                <span style={{ background: "#2d8a47", color: "#fff", borderRadius: "50%", width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, flexShrink: 0 }}>{i + 1}</span>
+                {item.q}
+              </div>
+              <p style={{ fontSize: 15, color: "#555", lineHeight: 1.7, paddingLeft: 40 }}>{item.a}</p>
+            </div>
+          ))}
+          <div style={{ background: "#1a5c2a", borderRadius: 14, padding: "28px 36px", color: "#fff", textAlign: "center", marginTop: 20 }}>
+            <p style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}>Не нашли ответ на свой вопрос?</p>
+            <a href="https://wa.me/905400070095" target="_blank" rel="noreferrer" style={{ background: "#25d366", color: "#fff", textDecoration: "none", borderRadius: 8, padding: "12px 28px", fontWeight: 700, fontSize: 14 }}>
+              💬 Написать в WhatsApp
+            </a>
+          </div>
+        </div>
+      )}
       {/* ABOUT PAGE */}
       {page === "about" && (
         <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
