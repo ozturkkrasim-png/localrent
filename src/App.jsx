@@ -45,7 +45,7 @@ export default function App() {
   const sendEmail = (car, pickupDate, returnDate, days, total) => {
     if (typeof window.emailjs === "undefined") return;
     window.emailjs.init("NOP4w5U43oGZ4P0RS");
-    window.emailjs.send("service_k60k4su", "template_508cxnq", {
+const params = {
       from_name: form.name + " " + form.surname,
       name: form.name + " " + form.surname,
       phone: form.phone,
@@ -59,7 +59,15 @@ export default function App() {
       notes: form.notes || "-",
       message: "Новое бронирование от " + form.name,
       title: car.name,
-    }).then(() => console.log("Email sent!")).catch(e => console.error(e));
+    };
+    // Admin'e mail
+    window.emailjs.send("service_k60k4su", "template_508cxnq", params)
+      .then(() => console.log("Admin email sent!"))
+      .catch(e => console.error(e));
+    // Müşteriye onay maili
+    window.emailjs.send("service_k60k4su", "template_4d8skxp", params)
+      .then(() => console.log("Customer email sent!"))
+      .catch(e => console.error(e));
   };
 
   const days = search.pickupDate && search.returnDate
