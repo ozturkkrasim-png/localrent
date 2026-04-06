@@ -280,7 +280,7 @@ const params = {
             <div className="cars-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
               {cars.slice(0,3).map(car => (
                 <div key={car.id} className="car-card" onClick={() => { setSelectedCar(car); setPage("extras"); }}>
-                  <img src={car.image} alt={car.name} style={{ width: "100%", height: 180, objectFit: "cover" }} onError={e => e.target.style.display="none"} />
+                  <img src={car.image} alt={`${car.name} — аренда авто Анталья`} style={{ width: "100%", height: 180, objectFit: "cover" }} onError={e => e.target.style.display="none"} />
                   <div style={{ padding: "16px 20px 20px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                       <div>
@@ -610,7 +610,7 @@ const params = {
           <div className="cars-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
             {cars.map(car => (
               <div key={car.id} className={`car-card ${selectedCar?.id === car.id ? "selected" : ""}`} onClick={() => setSelectedCar(car)}>
-                <img src={car.image} alt={car.name} style={{ width: "100%", height: 180, objectFit: "cover" }} onError={e => e.target.style.display="none"} />
+                <img src={car.image} alt={`${car.name} — аренда авто Анталья`} style={{ width: "100%", height: 180, objectFit: "cover" }} onError={e => e.target.style.display="none"} />
                 <div style={{ padding: "16px 20px 20px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                     <div>
