@@ -198,7 +198,7 @@ const params = {
           <span style={{ fontSize: 11, color: "#999", fontFamily: "Nunito,sans-serif", fontWeight: 600, marginLeft: 10, letterSpacing: 2 }}>TÜRKİYE</span>
         </div>
         <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
-          {[["Автомобили", "cars"], ["Локации", "locations"], ["Условия", "terms"], ["Бронирование", "reservation"],["Блог", "blog"], ["О нас", "about"], ["Контакты", "contact"]].map(([label, pg]) => (
+          {[["Автомобили", "cars"], ["Локации", "locations"], ["Условия", "terms"], ["Бронирование", "reservation"], ["Блог", "blog"], ["О нас", "about"], ["Контакты", "contact"]].map(([label, pg]) => (
             <span key={label} onClick={() => pg === "booking" && selectedCar ? setPage("booking") : setPage(pg)} style={{ fontSize: 14, fontWeight: 700, color: page === pg ? "#2d8a47" : "#444", cursor: "pointer", transition: "color .2s" }}
               onMouseEnter={e => e.target.style.color = "#2d8a47"}
               onMouseLeave={e => e.target.style.color = page === "home" ? "#444" : "#2d8a47"}
