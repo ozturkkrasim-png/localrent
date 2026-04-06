@@ -1,13 +1,17 @@
 import { useState } from "react";
 
 /* ─── VERİ ─────────────────────────────────────────────────── */
+const WHATSAPP = "905400070095";
+const PHONE = "+90 540 007 00 95";
+const INSTAGRAM = "https://instagram.com/localrent.com.tr";
+
 const cars = [
-  { id: 1, name: "Renault Logan", category: "Эконом", price: 25, seats: 5, transmission: "Механика", fuel: "Бензин", engine: "1.6 л / 82 л.с.", year: 2022, image: "🚗", rating: 4.8, reviews: 124, deposit: 150, available: true, features: ["Кондиционер", "USB", "ABS", "Центральный замок", "Электростёкла"], mileage: "Без ограничений", minAge: 21, minLicense: "2 года" },
-  { id: 2, name: "Volkswagen Polo", category: "Эконом", price: 32, seats: 5, transmission: "Автомат", fuel: "Бензин", engine: "1.6 л / 110 л.с.", year: 2023, image: "🚙", rating: 4.9, reviews: 98, deposit: 200, available: true, features: ["Кондиционер", "Bluetooth", "ABS", "ESP", "Круиз-контроль", "Парктроник"], mileage: "Без ограничений", minAge: 21, minLicense: "2 года" },
-  { id: 3, name: "Toyota Camry", category: "Комфорт", price: 55, seats: 5, transmission: "Автомат", fuel: "Бензин", engine: "2.5 л / 181 л.с.", year: 2023, image: "🚘", rating: 4.7, reviews: 76, deposit: 300, available: true, features: ["Климат-контроль", "Bluetooth", "Камера заднего вида", "Круиз-контроль", "Кожаный салон", "Навигация"], mileage: "Без ограничений", minAge: 23, minLicense: "3 года" },
-  { id: 4, name: "Hyundai Tucson", category: "SUV", price: 65, seats: 5, transmission: "Автомат", fuel: "Дизель", engine: "2.0 л / 155 л.с.", year: 2022, image: "🚐", rating: 4.9, reviews: 203, deposit: 350, available: true, features: ["Климат-контроль", "Полный привод", "Камера 360°", "Bluetooth", "Подогрев сидений", "Люк"], mileage: "Без ограничений", minAge: 23, minLicense: "3 года" },
-  { id: 5, name: "Mercedes C-Class", category: "Премиум", price: 95, seats: 5, transmission: "Автомат", fuel: "Бензин", engine: "2.0 л / 204 л.с.", year: 2024, image: "🏎️", rating: 5.0, reviews: 45, deposit: 500, available: false, features: ["Климат-контроль", "Кожа Nappa", "Панорамная крыша", "Навигация", "Вентиляция сидений", "HUD", "Harman Kardon"], mileage: "300 км/день", minAge: 25, minLicense: "5 лет" },
-  { id: 6, name: "Ford Transit", category: "Минивэн", price: 75, seats: 8, transmission: "Механика", fuel: "Дизель", engine: "2.0 л / 130 л.с.", year: 2021, image: "🚌", rating: 4.6, reviews: 67, deposit: 400, available: true, features: ["Кондиционер", "Большой багажник", "ABS", "ESP", "USB", "Bluetooth"], mileage: "Без ограничений", minAge: 25, minLicense: "3 года" },
+  { id: 1, name: "Renault Logan", category: "Эконом", price: 25, seats: 5, transmission: "Механика", fuel: "Бензин", engine: "1.6 л / 82 л.с.", year: 2022, image: "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=600&q=80", rating: 4.8, reviews: 124, deposit: 150, available: true, features: ["Кондиционер", "USB", "ABS", "Центральный замок", "Электростёкла"], mileage: "Без ограничений", minAge: 21, minLicense: "2 года" },
+  { id: 2, name: "Volkswagen Polo", category: "Эконом", price: 32, seats: 5, transmission: "Автомат", fuel: "Бензин", engine: "1.6 л / 110 л.с.", year: 2023, image: "https://images.unsplash.com/photo-1502877338535-766e1452684a?w=600&q=80", rating: 4.9, reviews: 98, deposit: 200, available: true, features: ["Кондиционер", "Bluetooth", "ABS", "ESP", "Круиз-контроль", "Парктроник"], mileage: "Без ограничений", minAge: 21, minLicense: "2 года" },
+  { id: 3, name: "Toyota Camry", category: "Комфорт", price: 55, seats: 5, transmission: "Автомат", fuel: "Бензин", engine: "2.5 л / 181 л.с.", year: 2023, image: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=600&q=80", rating: 4.7, reviews: 76, deposit: 300, available: true, features: ["Климат-контроль", "Bluetooth", "Камера заднего вида", "Круиз-контроль", "Кожаный салон", "Навигация"], mileage: "Без ограничений", minAge: 23, minLicense: "3 года" },
+  { id: 4, name: "Hyundai Tucson", category: "SUV", price: 65, seats: 5, transmission: "Автомат", fuel: "Дизель", engine: "2.0 л / 155 л.с.", year: 2022, image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=600&q=80", rating: 4.9, reviews: 203, deposit: 350, available: true, features: ["Климат-контроль", "Полный привод", "Камера 360°", "Bluetooth", "Подогрев сидений", "Люк"], mileage: "Без ограничений", minAge: 23, minLicense: "3 года" },
+  { id: 5, name: "Mercedes C-Class", category: "Премиум", price: 95, seats: 5, transmission: "Автомат", fuel: "Бензин", engine: "2.0 л / 204 л.с.", year: 2024, image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=600&q=80", rating: 5.0, reviews: 45, deposit: 500, available: false, features: ["Климат-контроль", "Кожа Nappa", "Панорамная крыша", "Навигация", "Вентиляция сидений", "HUD", "Harman Kardon"], mileage: "300 км/день", minAge: 25, minLicense: "5 лет" },
+  { id: 6, name: "Ford Transit", category: "Минивэн", price: 75, seats: 8, transmission: "Механика", fuel: "Дизель", engine: "2.0 л / 130 л.с.", year: 2021, image: "https://images.unsplash.com/photo-1543465077-db45d34b88a5?w=600&q=80", rating: 4.6, reviews: 67, deposit: 400, available: true, features: ["Кондиционер", "Большой багажник", "ABS", "ESP", "USB", "Bluetooth"], mileage: "Без ограничений", minAge: 25, minLicense: "3 года" },
 ];
 
 const reviews = [
@@ -108,7 +112,7 @@ function DetailPage({ car, onBack, onBook }) {
               overflow: "hidden",
             }}>
               <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(ellipse at 50% 60%, rgba(201,155,69,0.06) 0%, transparent 70%)`, pointerEvents: "none" }} />
-              <span style={{ fontSize: "120px", filter: "drop-shadow(0 0 40px rgba(201,155,69,0.2))", display: "block", lineHeight: 1 }}>{car.image}</span>
+              <img src={car.image} alt={car.name} style={{ width: "100%", maxHeight: "280px", objectFit: "cover", borderRadius: "3px" }} />
               <span className="badge" style={{ position: "absolute", top: "16px", left: "16px", background: `rgba(${categoryColors[car.category]?.replace('#','').match(/../g)?.map(x => parseInt(x, 16)).join(',') || '255,255,255'},0.12)`, color: categoryColors[car.category], border: `1px solid ${categoryColors[car.category]}40` }}>
                 {car.category}
               </span>
@@ -369,7 +373,7 @@ function HomePage({ onSelect }) {
           {filtered.map(car => (
             <div key={car.id} className="car-list-card" onClick={() => onSelect(car)} style={{ opacity: car.available ? 1 : 0.5 }}>
               <div style={{ background: "linear-gradient(135deg,rgba(15,23,42,0.9),rgba(10,14,26,0.95))", padding: "32px 24px 20px", textAlign: "center", position: "relative" }}>
-                <span style={{ fontSize: "60px" }}>{car.image}</span>
+                <img src={car.image} alt={car.name} style={{ width: "100%", height: "160px", objectFit: "cover" }} />
                 <span className="badge" style={{ position: "absolute", top: "12px", left: "12px", color: categoryColors[car.category], border: `1px solid ${categoryColors[car.category]}40`, background: `${categoryColors[car.category]}18` }}>{car.category}</span>
                 {!car.available && <span className="badge" style={{ position: "absolute", top: "12px", right: "12px", color: "#ef4444", border: "1px solid rgba(239,68,68,0.3)", background: "rgba(239,68,68,0.1)" }}>Занят</span>}
               </div>
@@ -405,12 +409,18 @@ function HomePage({ onSelect }) {
         </div>
       </section>
 
-      <footer style={{ borderTop: "1px solid rgba(255,255,255,0.06)", padding: "28px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
+      <footer style={{ borderTop: "1px solid rgba(255,255,255,0.06)", padding: "28px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
         <span style={{ fontFamily: "'Playfair Display',serif", fontSize: "18px", fontWeight: 900 }}><span className="gold">Local</span>Rent <span style={{ fontFamily: "'Crimson Text',serif", fontSize: "12px", color: "rgba(232,228,220,0.25)", letterSpacing: "2px" }}>© 2026</span></span>
-        <div style={{ display: "flex", gap: "24px" }}>
-          <a href="#" className="nav-link">Конфиденциальность</a>
-          <a href="#" className="nav-link">Условия</a>
-          <a href="#" className="nav-link">Контакты</a>
+        <div style={{ display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
+          <a href={"tel:" + PHONE} className="nav-link" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <span>📞</span> {PHONE}
+          </a>
+          <a href={"https://wa.me/" + WHATSAPP} target="_blank" rel="noopener noreferrer" className="nav-link" style={{ display: "flex", alignItems: "center", gap: "6px", color: "#25d366" }}>
+            <span>💬</span> WhatsApp
+          </a>
+          <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" className="nav-link" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <span>📸</span> Instagram
+          </a>
         </div>
       </footer>
     </div>
@@ -480,7 +490,7 @@ function BookingPage({ car, pickupDate, returnDate, days, total, onBack }) {
           <div>
             <div className="price-box">
               <p style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "rgba(201,155,69,0.7)", marginBottom: "12px" }}>Ваш заказ</p>
-              <div style={{ fontSize: "28px", textAlign: "center", marginBottom: "8px" }}>{car.image}</div>
+              <img src={car.image} alt={car.name} style={{ width: "100%", height: "100px", objectFit: "cover", borderRadius: "3px", marginBottom: "8px" }} />
               <p style={{ fontFamily: "'Playfair Display',serif", fontSize: "18px", fontWeight: 700, textAlign: "center", marginBottom: "16px" }}>{car.name}</p>
               <div className="divider" style={{ margin: "0 auto 16px" }} />
               {[
@@ -514,6 +524,26 @@ export default function App() {
   return (
     <>
       <style>{S}</style>
+
+      {/* WhatsApp floating button */}
+      <a
+        href={`https://wa.me/${WHATSAPP}?text=Здравствуйте! Хочу узнать об аренде автомобиля.`}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          position: "fixed", bottom: "28px", right: "28px", zIndex: 9999,
+          width: "58px", height: "58px", borderRadius: "50%",
+          background: "linear-gradient(135deg, #25d366, #128c7e)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          boxShadow: "0 6px 24px rgba(37,211,102,0.4)",
+          textDecoration: "none",
+        }}
+        title="WhatsApp: " + PHONE
+      >
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="white">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+      </a>
       {page === "home" && (
         <HomePage onSelect={car => { setSelectedCar(car); setPage("detail"); }} />
       )}
