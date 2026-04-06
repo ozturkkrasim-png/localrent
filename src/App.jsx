@@ -37,7 +37,7 @@ const extras = [
 export default function App() {
   const [page, setPage] = useState("home");
   const [selectedCar, setSelectedCar] = useState(null);
-  const [search, setSearch] = useState({ pickup: "", pickupDate: "", pickupTime: "10:00", returnLoc: "", returnDate: "", returnTime: "10:00", sameReturn: true });
+  const [search, setSearch] = useState({ pickup: "", pickupDate: "", pickupTime: "10:00", returnLoc: "", returnDate: "", returnTime: "10:00", sameReturn: true, category: "Любая" });
   const [selectedExtras, setSelectedExtras] = useState([]);
   const [form, setForm] = useState({ name: "", surname: "", phone: "", email: "", flight: "", notes: "" });
   const [done, setDone] = useState(false);
@@ -113,7 +113,7 @@ export default function App() {
           <span style={{ fontSize: 11, color: "#999", fontFamily: "Nunito,sans-serif", fontWeight: 600, marginLeft: 10, letterSpacing: 2 }}>TÜRKİYE</span>
         </div>
         <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
-          {[["Автомобили", "cars"], ["Локации", "locations"], ["Условия", "terms"], ["Бронирование", "booking"], ["О нас", "about"], ["Контакты", "contact"]].map(([label, pg]) => (
+          {[["Автомобили", "cars"], ["Локации", "locations"], ["Условия", "terms"], ["Бронирование", "reservation"], ["О нас", "about"], ["Контакты", "contact"]].map(([label, pg]) => (
             <span key={label} onClick={() => pg === "booking" && selectedCar ? setPage("booking") : setPage(pg)} style={{ fontSize: 14, fontWeight: 700, color: page === pg ? "#2d8a47" : "#444", cursor: "pointer", transition: "color .2s" }}
               onMouseEnter={e => e.target.style.color = "#2d8a47"}
               onMouseLeave={e => e.target.style.color = page === "home" ? "#444" : "#2d8a47"}
@@ -404,6 +404,80 @@ export default function App() {
         </div>
       )}
 
+
+      {page === "reservation" && (
+        <div style={{ maxWidth: 760, margin: "0 auto", padding: "40px 48px" }}>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Бронирование</h1>
+          <p style={{ color: "#888", marginBottom: 36 }}>Заполните форму — мы подберём лучший автомобиль для вас</p>
+
+          <div style={{ background: "#f9fdf9", border: "1.5px solid #d0eeda", borderRadius: 14, padding: "32px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Место получения</div>
+                <select className="sel" value={search.pickup} onChange={e => setS("pickup", e.target.value)}>
+                  <option value="">Выберите локацию</option>
+                  {cities.map(c => <option key={c}>{c}</option>)}
+                </select>
+              </div>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Место возврата</div>
+                <select className="sel" value={search.returnLoc} onChange={e => setS("returnLoc", e.target.value)}>
+                  <option value="">То же место</option>
+                  {cities.map(c => <option key={c}>{c}</option>)}
+                </select>
+              </div>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Дата получения</div>
+                <input type="date" className="sel" value={search.pickupDate} onChange={e => setS("pickupDate", e.target.value)} />
+              </div>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Время получения</div>
+                <select className="sel" value={search.pickupTime} onChange={e => setS("pickupTime", e.target.value)}>
+                  {times.map(t => <option key={t}>{t}</option>)}
+                </select>
+              </div>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Дата возврата</div>
+                <input type="date" className="sel" value={search.returnDate} onChange={e => setS("returnDate", e.target.value)} />
+              </div>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Время возврата</div>
+                <select className="sel" value={search.returnTime} onChange={e => setS("returnTime", e.target.value)}>
+                  {times.map(t => <option key={t}>{t}</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div style={{ borderTop: "1px solid #d0eeda", paddingTop: 20, marginBottom: 20 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "#1a5c2a", marginBottom: 14 }}>Категория автомобиля</div>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                {["Любая", "Эконом", "Комфорт", "SUV", "Минивэн"].map(cat => (
+                  <button key={cat} onClick={() => setS("category", cat)}
+                    style={{ padding: "8px 18px", borderRadius: 8, border: "1.5px solid", borderColor: search.category === cat ? "#2d8a47" : "#ddd", background: search.category === cat ? "#2d8a47" : "#fff", color: search.category === cat ? "#fff" : "#555", fontFamily: "Nunito,sans-serif", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <button className="green-btn" style={{ width: "100%", padding: 16, fontSize: 16 }}
+              onClick={() => setPage("cars")}>
+              🔍 Показать доступные автомобили
+            </button>
+          </div>
+
+          <div style={{ marginTop: 28, background: "#fff", border: "1.5px solid #e8f5ec", borderRadius: 14, padding: "24px 32px" }}>
+            <p style={{ fontSize: 14, color: "#888", textAlign: "center", marginBottom: 16 }}>
+              Предпочитаете забронировать через WhatsApp?
+            </p>
+            <a href={"https://wa.me/905400070095?text=Здравствуйте! Хочу забронировать автомобиль."} 
+              target="_blank" rel="noreferrer"
+              style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, background: "#25d366", color: "#fff", textDecoration: "none", borderRadius: 8, padding: "13px", fontFamily: "Nunito,sans-serif", fontWeight: 700, fontSize: 15 }}>
+              💬 Написать в WhatsApp
+            </a>
+          </div>
+        </div>
+      )}
       {page === "terms" && (
         <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
           <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Условия аренды</h1>
