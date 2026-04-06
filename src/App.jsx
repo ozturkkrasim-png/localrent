@@ -17,7 +17,35 @@ for (let h = 0; h < 24; h++) {
     times.push(`${String(h).padStart(2,"0")}:${m}`);
   }
 }
-
+const blogs = [
+  {
+    id: 1,
+    title: "Как арендовать авто в Анталье: полное руководство",
+    date: "01.04.2026",
+    category: "Советы",
+    image: "/antalya.jpg",
+    excerpt: "Аренда автомобиля в Анталье — лучший способ исследовать Турецкую Ривьеру. Рассказываем, как выбрать машину, что взять с собой и как сэкономить.",
+    content: `Анталья — один из самых популярных курортов Турции. Чтобы увидеть всё самое интересное, лучший вариант — арендовать автомобиль. Так вы сможете посетить Кемер, Аланью, Сиде и другие города в удобное время.\n\nЧто нужно для аренды:\n• Водительское удостоверение (стаж от 1 года)\n• Паспорт\n• Минимальный возраст — 21 год\n\nСоветы по экономии:\n• Бронируйте заранее — цены ниже\n• Выбирайте полную страховку\n• Проверяйте авто перед получением`
+  },
+  {
+    id: 2,
+    title: "Кемер на машине: лучшие маршруты 2026",
+    date: "25.03.2026",
+    category: "Маршруты",
+    image: "/antalya.jpg",
+    excerpt: "Кемер и его окрестности скрывают удивительные места: древние руины, горные дороги и уединённые пляжи. Составили для вас идеальный маршрут.",
+    content: `Кемер расположен в 45 км от Анталии. На машине вы доберётесь туда за 40 минут по живописному шоссе вдоль моря.\n\nЧто посетить рядом с Кемером:\n• Олимпос — древний город и горящий огонь Химеры\n• Фазелис — руины у воды\n• Гёйнюк каньон — треккинг и джип-туры\n• Тахталы — канатная дорога на 2365 м\n\nМаршрут на день:\nКемер → Фазелис (20 мин) → Олимпос (30 мин) → Химера (15 мин) → возврат`
+  },
+  {
+    id: 3,
+    title: "10 советов туристам при аренде авто в Турции",
+    date: "15.03.2026",
+    category: "Советы",
+    image: "/antalya.jpg",
+    excerpt: "Собрали самые важные советы для тех, кто впервые берёт машину напрокат в Турции. Читайте, чтобы не попасть в неприятную ситуацию.",
+    content: `1. Всегда проверяйте автомобиль перед получением — фотографируйте все царапины.\n2. Выбирайте полную страховку без франшизы.\n3. Не забудьте взять водительское удостоверение и паспорт.\n4. Заправляйтесь на официальных АЗС.\n5. Соблюдайте скоростной режим — камер много.\n6. Платные дороги (HGS) — уточните у арендодателя.\n7. Парковка в центре городов платная.\n8. Держите номер службы поддержки под рукой.\n9. Проверьте запасное колесо и домкрат.\n10. Возвращайте авто с полным баком.`
+  },
+];
 const cars = [
   { id: 1, name: "Renault Clio", category: "Эконом", price: 22, seats: 5, transmission: "Механика", fuel: "Бензин", ac: true, image: "/cars/cli5.jpg", doors: 5 },
   { id: 2, name: "Fiat Egea", category: "Комфорт", price: 35, seats: 5, transmission: "Автомат", fuel: "Бензин", ac: true, image: "/cars/egea.jpg", doors: 4 },
@@ -170,7 +198,7 @@ const params = {
           <span style={{ fontSize: 11, color: "#999", fontFamily: "Nunito,sans-serif", fontWeight: 600, marginLeft: 10, letterSpacing: 2 }}>TÜRKİYE</span>
         </div>
         <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
-          {[["Автомобили", "cars"], ["Локации", "locations"], ["Условия", "terms"], ["Бронирование", "reservation"], ["О нас", "about"], ["Контакты", "contact"]].map(([label, pg]) => (
+          {[["Автомобили", "cars"], ["Локации", "locations"], ["Условия", "terms"], ["Бронирование", "reservation"],["Блог", "blog"], ["О нас", "about"], ["Контакты", "contact"]].map(([label, pg]) => (
             <span key={label} onClick={() => pg === "booking" && selectedCar ? setPage("booking") : setPage(pg)} style={{ fontSize: 14, fontWeight: 700, color: page === pg ? "#2d8a47" : "#444", cursor: "pointer", transition: "color .2s" }}
               onMouseEnter={e => e.target.style.color = "#2d8a47"}
               onMouseLeave={e => e.target.style.color = page === "home" ? "#444" : "#2d8a47"}
@@ -360,7 +388,45 @@ const params = {
 
 
 
-      {page === "about" && (
+     {page === "blog" && (
+        <div style={{ maxWidth: 960, margin: "0 auto", padding: "40px 48px" }}>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Блог</h1>
+          <p style={{ color: "#888", marginBottom: 40 }}>Советы, маршруты и полезная информация для путешественников</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 28 }}>
+            {blogs.map(blog => (
+              <div key={blog.id} onClick={() => setPage("blog-" + blog.id)} style={{ border: "1.5px solid #e8f5ec", borderRadius: 14, overflow: "hidden", cursor: "pointer", background: "#fff", transition: "all .3s" }}
+                onMouseEnter={e => e.currentTarget.style.boxShadow = "0 8px 32px rgba(45,138,71,0.12)"}
+                onMouseLeave={e => e.currentTarget.style.boxShadow = "none"}>
+                <img src={blog.image} alt={blog.title} style={{ width: "100%", height: 180, objectFit: "cover" }} />
+                <div style={{ padding: "20px" }}>
+                  <span style={{ background: "#e8f5ec", color: "#2d8a47", borderRadius: 20, padding: "3px 10px", fontSize: 12, fontWeight: 700 }}>{blog.category}</span>
+                  <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 16, fontWeight: 800, color: "#1a5c2a", margin: "10px 0 8px", lineHeight: 1.4 }}>{blog.title}</h2>
+                  <p style={{ fontSize: 13, color: "#888", lineHeight: 1.6, marginBottom: 12 }}>{blog.excerpt}</p>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ fontSize: 12, color: "#bbb" }}>{blog.date}</span>
+                    <span style={{ fontSize: 13, color: "#2d8a47", fontWeight: 700 }}>Читать →</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {blogs.map(blog => page === "blog-" + blog.id && (
+        <div key={blog.id} style={{ maxWidth: 760, margin: "0 auto", padding: "40px 48px" }}>
+          <button onClick={() => setPage("blog")} style={{ background: "none", border: "none", color: "#2d8a47", fontWeight: 700, cursor: "pointer", fontSize: 14, marginBottom: 24, padding: 0 }}>← Назад в блог</button>
+          <img src={blog.image} alt={blog.title} style={{ width: "100%", height: 300, objectFit: "cover", borderRadius: 14, marginBottom: 28 }} />
+          <span style={{ background: "#e8f5ec", color: "#2d8a47", borderRadius: 20, padding: "3px 10px", fontSize: 12, fontWeight: 700 }}>{blog.category}</span>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 28, fontWeight: 900, color: "#1a5c2a", margin: "12px 0 8px", lineHeight: 1.3 }}>{blog.title}</h1>
+          <div style={{ fontSize: 13, color: "#bbb", marginBottom: 24 }}>{blog.date}</div>
+          <div style={{ fontSize: 15, color: "#444", lineHeight: 1.9, whiteSpace: "pre-line" }}>{blog.content}</div>
+          <div style={{ marginTop: 40, background: "#f0f9f3", border: "1.5px solid #d0eeda", borderRadius: 12, padding: "24px", textAlign: "center" }}>
+            <p style={{ fontWeight: 700, color: "#1a5c2a", marginBottom: 12 }}>Хотите арендовать авто в Анталье?</p>
+            <button className="green-btn" onClick={() => setPage("cars")}>Выбрать автомобиль →</button>
+          </div>
+        </div>
+      ))} {page === "about" && (
         <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
           <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>О нас</h1>
           <p style={{ color: "#888", marginBottom: 40 }}>Мы — местная компания по аренде автомобилей в Турции</p>
