@@ -187,6 +187,7 @@ export default function App() {
           </div>
         </div>
 
+
         {/* WHY US */}
         <div style={{ padding: "64px 48px", background: "#f9fdf9" }}>
           <div style={{ maxWidth: 960, margin: "0 auto" }}>
@@ -249,6 +250,39 @@ export default function App() {
           </div>
         </div>
 
+        {/* FEATURES SECTION */}
+        <div style={{ background: "#0099cc", padding: "60px 48px" }}>
+          <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+            <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 24, fontWeight: 900, color: "#fff", textAlign: "center", marginBottom: 8 }}>
+              Мы гарантируем конкурентные цены и высокий уровень обслуживания
+            </h2>
+            <div style={{ width: 60, height: 3, background: "rgba(255,255,255,0.5)", margin: "12px auto 48px" }} />
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 32 }}>
+              {[
+                { icon: "🛡️", text: "Полное КАСКО без франшизы" },
+                { icon: "❤️", text: "Страхование от несчастных случаев" },
+                { icon: "🔥", text: "Страховка от угона и пожара" },
+                { icon: "🚗", text: "Покрытие шин, стёкол и днища" },
+                { icon: "📞", text: "Помощь на дороге 24/7" },
+                { icon: "💳", text: "Кредитная карта не требуется" },
+                { icon: "💰", text: "Нет скрытых платежей" },
+                { icon: "🧾", text: "Все налоги включены" },
+                { icon: "💵", text: "Оплата наличными или картой" },
+                { icon: "👥", text: "Второй водитель бесплатно" },
+                { icon: "🛣️", text: "Неограниченный пробег" },
+                { icon: "❄️", text: "Все авто с кондиционером" },
+                { icon: "🚭", text: "Авто для некурящих" },
+                { icon: "🗺️", text: "Карта маршрутов бесплатно" },
+                { icon: "👶", text: "Детское кресло бесплатно" },
+              ].map((item, i) => (
+                <div key={i} style={{ textAlign: "center", color: "#fff" }}>
+                  <div style={{ fontSize: 40, marginBottom: 12, filter: "brightness(10)", opacity: 0.9 }}>{item.icon}</div>
+                  <div style={{ fontSize: 13, lineHeight: 1.5, color: "rgba(255,255,255,0.9)", fontWeight: 600 }}>{item.text}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
         {/* FOOTER */}
         <footer style={{ background: "#1a5c2a", color: "#fff", padding: "40px 48px" }}>
           <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 20 }}>
