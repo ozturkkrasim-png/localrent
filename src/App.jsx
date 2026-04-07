@@ -257,7 +257,7 @@ export default function App() {
 
       {page === "home" && <>
         {/* HERO */}
-        <div className="hero" style={{ padding: "72px 48px 80px", marginTop: 0(135deg, rgba(26,92,42,0.75) 0%, rgba(45,138,71,0.70) 60%, rgba(26,92,42,0.78) 100%), url(/antalya.jpg)", backgroundSize: "cover", backgroundPosition: "center", padding: "72px 48px 80px", position: "relative", overflow: "hidden" }}>
+        <div className="hero" style={{ backgroundImage: "linear-gradient(135deg, rgba(26,92,42,0.75) 0%, rgba(45,138,71,0.70) 60%, rgba(26,92,42,0.78) 100%), url(/antalya.jpg)", backgroundSize: "cover", backgroundPosition: "center", padding: "72px 48px 80px", position: "relative", overflow: "hidden" }}>
           <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center", position: "relative" }}>
             <div style={{ display: "inline-block", background: "rgba(255,255,255,0.15)", borderRadius: 20, padding: "6px 20px", fontSize: 13, color: "#fff", fontWeight: 700, marginBottom: 8, letterSpacing: 1 }}>
               🚗 АРЕНДА АВТОМОБИЛЕЙ В ТУРЦИИ
