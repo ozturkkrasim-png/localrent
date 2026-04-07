@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const WHATSAPP = "905400070095";
 const PHONE = "+90 540 007 00 95";
@@ -114,7 +114,7 @@ export default function App() {
     setPage(pg);
   };
 
-  useState(() => {
+  useEffect(() => {
     const onPop = (e) => {
       if (e.state?.page) setPage(e.state.page);
       else setPage("home");
