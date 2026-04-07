@@ -109,6 +109,21 @@ export default function App() {
 
   const setS = (k, v) => setSearch(p => ({ ...p, [k]: v }));
 
+  const goTo = (pg) => {
+    window.history.pushState({ page: pg }, "", "#" + pg);
+    setPage(pg);
+  };
+
+  useState(() => {
+    const onPop = (e) => {
+      if (e.state?.page) setPage(e.state.page);
+      else setPage("home");
+    };
+    window.addEventListener("popstate", onPop);
+    window.history.replaceState({ page: "home" }, "", "#home");
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
   if (done) return (
     <div style={{ fontFamily: "Nunito, sans-serif", background: "#f0f7f0", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap');`}</style>
@@ -136,7 +151,7 @@ export default function App() {
   );
 
   const CarCard = ({ car }) => (
-    <div className="car-card" onClick={() => { setSelectedCar(car); setPage("extras"); }}>
+    <div className="car-card" onClick={() => { setSelectedCar(car); goTo("extras"); }}>
       <img src={car.image} alt={`${car.name} — аренда авто Анталья`} style={{ width: "100%", height: 180, objectFit: "cover" }} onError={e => e.target.style.display="none"} />
       <div style={{ padding: "16px 20px 20px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
@@ -154,7 +169,7 @@ export default function App() {
           <span>⚙️ {car.transmission}</span>
           <span>⛽ {car.fuel}</span>
         </div>
-        <button className="green-btn" style={{ width: "100%", padding: "11px" }} onClick={e => { e.stopPropagation(); setSelectedCar(car); setPage("extras"); }}>
+        <button className="green-btn" style={{ width: "100%", padding: "11px" }} onClick={e => { e.stopPropagation(); setSelectedCar(car); goTo("extras"); }}>
           Запросить цену
         </button>
       </div>
@@ -231,12 +246,12 @@ export default function App() {
         </div>
         <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
           {[["Автомобили", "cars"], ["Локации", "locations"], ["Условия", "terms"], ["Бронирование", "reservation"], ["Блог", "blog"], ["ЧаВо", "faq"], ["О нас", "about"], ["Контакты", "contact"]].map(([label, pg]) => (
-            <span key={label} onClick={() => setPage(pg)} style={{ fontSize: 14, fontWeight: 700, color: page === pg ? "#2d8a47" : "#444", cursor: "pointer", transition: "color .2s" }}
+            <span key={label} onClick={() => goTo(pg)} style={{ fontSize: 14, fontWeight: 700, color: page === pg ? "#2d8a47" : "#444", cursor: "pointer", transition: "color .2s" }}
               onMouseEnter={e => e.target.style.color = "#2d8a47"}
               onMouseLeave={e => e.target.style.color = page === pg ? "#2d8a47" : "#444"}
             >{label}</span>
           ))}
-          <button className="green-btn" style={{ padding: "10px 22px", fontSize: 14 }} onClick={() => setPage("cars")}>Запросить цену</button>
+          <button className="green-btn" style={{ padding: "10px 22px", fontSize: 14 }} onClick={() => goTo("cars")}>Запросить цену</button>
         </div>
       </nav>
 
@@ -293,7 +308,7 @@ export default function App() {
                     {times.map(t => <option key={t}>{t}</option>)}
                   </select>
                 </div>
-                <button className="green-btn" style={{ whiteSpace: "nowrap", height: 44 }} onClick={() => setPage("cars")}>
+                <button className="green-btn" style={{ whiteSpace: "nowrap", height: 44 }} onClick={() => goTo("cars")}>
                   🔍 Найти
                 </button>
               </div>
@@ -331,7 +346,7 @@ export default function App() {
                 <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a" }}>Наш автопарк</h2>
                 <p style={{ color: "#888", marginTop: 4 }}>Запросите цену на любой автомобиль</p>
               </div>
-              <button className="outline-btn" onClick={() => setPage("cars")}>Все автомобили →</button>
+              <button className="outline-btn" onClick={() => goTo("cars")}>Все автомобили →</button>
             </div>
             <div className="cars-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
               {cars.slice(0,3).map(car => <CarCard key={car.id} car={car} />)}
@@ -347,11 +362,11 @@ export default function App() {
                 <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a" }}>Блог</h2>
                 <p style={{ color: "#888", marginTop: 4 }}>Советы и маршруты для путешественников</p>
               </div>
-              <button className="outline-btn" onClick={() => setPage("blog")}>Все статьи →</button>
+              <button className="outline-btn" onClick={() => goTo("blog")}>Все статьи →</button>
             </div>
             <div className="blog-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
               {blogs.map(blog => (
-                <div key={blog.id} onClick={() => setPage("blog-" + blog.id)} style={{ border: "1.5px solid #e8f5ec", borderRadius: 14, overflow: "hidden", cursor: "pointer", background: "#fff" }}>
+                <div key={blog.id} onClick={() => goTo("blog-" + blog.id)} style={{ border: "1.5px solid #e8f5ec", borderRadius: 14, overflow: "hidden", cursor: "pointer", background: "#fff" }}>
                   <img src={blog.image} alt={blog.title} style={{ width: "100%", height: 160, objectFit: "cover" }} />
                   <div style={{ padding: "16px 20px" }}>
                     <span style={{ background: "#e8f5ec", color: "#2d8a47", borderRadius: 20, padding: "3px 10px", fontSize: 12, fontWeight: 700 }}>{blog.category}</span>
@@ -426,7 +441,7 @@ export default function App() {
           <p style={{ color: "#888", marginBottom: 40 }}>Советы, маршруты и полезная информация для путешественников</p>
           <div className="blog-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 28 }}>
             {blogs.map(blog => (
-              <div key={blog.id} onClick={() => setPage("blog-" + blog.id)} style={{ border: "1.5px solid #e8f5ec", borderRadius: 14, overflow: "hidden", cursor: "pointer", background: "#fff" }}>
+              <div key={blog.id} onClick={() => goTo("blog-" + blog.id)} style={{ border: "1.5px solid #e8f5ec", borderRadius: 14, overflow: "hidden", cursor: "pointer", background: "#fff" }}>
                 <img src={blog.image} alt={blog.title} style={{ width: "100%", height: 180, objectFit: "cover" }} />
                 <div style={{ padding: "20px" }}>
                   <span style={{ background: "#e8f5ec", color: "#2d8a47", borderRadius: 20, padding: "3px 10px", fontSize: 12, fontWeight: 700 }}>{blog.category}</span>
@@ -445,7 +460,7 @@ export default function App() {
 
       {blogs.map(blog => page === "blog-" + blog.id && (
         <div key={blog.id} style={{ maxWidth: 760, margin: "0 auto", padding: "40px 48px" }}>
-          <button onClick={() => setPage("blog")} style={{ background: "none", border: "none", color: "#2d8a47", fontWeight: 700, cursor: "pointer", fontSize: 14, marginBottom: 24, padding: 0 }}>← Назад в блог</button>
+          <button onClick={() => goTo("blog")} style={{ background: "none", border: "none", color: "#2d8a47", fontWeight: 700, cursor: "pointer", fontSize: 14, marginBottom: 24, padding: 0 }}>← Назад в блог</button>
           <img src={blog.image} alt={blog.title} style={{ width: "100%", height: 300, objectFit: "cover", borderRadius: 14, marginBottom: 28 }} />
           <span style={{ background: "#e8f5ec", color: "#2d8a47", borderRadius: 20, padding: "3px 10px", fontSize: 12, fontWeight: 700 }}>{blog.category}</span>
           <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 28, fontWeight: 900, color: "#1a5c2a", margin: "12px 0 8px" }}>{blog.title}</h1>
@@ -453,7 +468,7 @@ export default function App() {
           <div style={{ fontSize: 15, color: "#444", lineHeight: 1.9, whiteSpace: "pre-line" }}>{blog.content}</div>
           <div style={{ marginTop: 40, background: "#f0f9f3", border: "1.5px solid #d0eeda", borderRadius: 12, padding: "24px", textAlign: "center" }}>
             <p style={{ fontWeight: 700, color: "#1a5c2a", marginBottom: 12 }}>Хотите арендовать авто в Анталье?</p>
-            <button className="green-btn" onClick={() => setPage("cars")}>Запросить цену →</button>
+            <button className="green-btn" onClick={() => goTo("cars")}>Запросить цену →</button>
           </div>
         </div>
       ))}
@@ -637,7 +652,7 @@ export default function App() {
                 </select>
               </div>
             </div>
-            <button className="green-btn" style={{ width: "100%", padding: 16, fontSize: 16 }} onClick={() => setPage("cars")}>
+            <button className="green-btn" style={{ width: "100%", padding: 16, fontSize: 16 }} onClick={() => goTo("cars")}>
               🚗 Выбрать автомобиль
             </button>
           </div>
@@ -714,7 +729,7 @@ export default function App() {
                   </div>
                 ))}
               </div>
-              <button className="green-btn" style={{ width: "100%" }} onClick={() => setPage("booking")}>
+              <button className="green-btn" style={{ width: "100%" }} onClick={() => goTo("booking")}>
                 Продолжить →
               </button>
             </div>
