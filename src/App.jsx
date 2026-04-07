@@ -721,6 +721,83 @@ export default function App() {
       )}
 
       {/* TERMS */}
+      {/* PRIVACY */}
+      {page === "privacy" && (
+        <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Политика конфиденциальности</h1>
+          <p style={{ color: "#888", marginBottom: 40 }}>Последнее обновление: апрель 2026</p>
+          {[
+            { title: "Какие данные мы собираем", text: "Мы собираем следующие данные: имя и фамилия, номер телефона, адрес электронной почты, номер рейса (по желанию), информация об аренде автомобиля. Данные собираются только при заполнении формы запроса цены." },
+            { title: "Как мы используем ваши данные", text: "Собранные данные используются исключительно для: обработки вашего запроса на аренду автомобиля, связи с вами по вопросам бронирования, отправки подтверждения на email. Мы не используем ваши данные для маркетинговых рассылок без вашего согласия." },
+            { title: "Передача данных третьим лицам", text: "Мы не продаём, не передаём и не раскрываем ваши личные данные третьим лицам. Исключение составляют случаи, предусмотренные законодательством Турецкой Республики." },
+            { title: "Хранение данных", text: "Ваши данные хранятся на защищённых серверах. Мы применяем современные технологии шифрования для защиты вашей информации. Данные хранятся не дольше, чем это необходимо для выполнения услуги." },
+            { title: "Ваши права", text: "Вы имеете право: запросить доступ к своим данным, потребовать исправления или удаления данных, отозвать согласие на обработку данных. Для этого напишите нам на info@localrent.com.tr." },
+            { title: "Контакты", text: "По вопросам конфиденциальности: info@localrent.com.tr | +90 540 007 00 95" },
+          ].map((item, i) => (
+            <div key={i} style={{ borderBottom: "1px solid #eee", paddingBottom: 24, marginBottom: 24 }}>
+              <h3 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 17, fontWeight: 800, color: "#1a5c2a", marginBottom: 8 }}>{i + 1}. {item.title}</h3>
+              <p style={{ fontSize: 15, color: "#555", lineHeight: 1.7 }}>{item.text}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* COOKIES */}
+      {page === "cookies" && (
+        <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Политика cookies</h1>
+          <p style={{ color: "#888", marginBottom: 40 }}>Последнее обновление: апрель 2026</p>
+          {[
+            { title: "Что такое cookies", text: "Cookies — это небольшие текстовые файлы, которые сохраняются на вашем устройстве при посещении сайта. Они помогают сайту работать корректно и улучшают пользовательский опыт." },
+            { title: "Какие cookies мы используем", text: "Аналитические cookies (Google Analytics): используются для анализа трафика сайта и улучшения его работы. Мы собираем анонимную статистику о посещениях. Технические cookies: необходимы для корректной работы сайта." },
+            { title: "Управление cookies", text: "Вы можете отключить cookies в настройках вашего браузера. Обратите внимание, что отключение cookies может повлиять на функциональность сайта." },
+            { title: "Контакты", text: "По вопросам использования cookies: info@localrent.com.tr" },
+          ].map((item, i) => (
+            <div key={i} style={{ borderBottom: "1px solid #eee", paddingBottom: 24, marginBottom: 24 }}>
+              <h3 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 17, fontWeight: 800, color: "#1a5c2a", marginBottom: 8 }}>{i + 1}. {item.title}</h3>
+              <p style={{ fontSize: 15, color: "#555", lineHeight: 1.7 }}>{item.text}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* USAGE */}
+      {page === "usage" && (
+        <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Условия использования</h1>
+          <p style={{ color: "#888", marginBottom: 40 }}>Последнее обновление: апрель 2026</p>
+          {[
+            { title: "Использование сайта", text: "Используя сайт localrent.com.tr, вы соглашаетесь с настоящими условиями. Сайт предназначен для информирования об услугах аренды автомобилей и приёма запросов на аренду." },
+            { title: "Интеллектуальная собственность", text: "Все материалы сайта (тексты, изображения, логотипы) являются собственностью LocalRent и защищены авторским правом. Копирование без разрешения запрещено." },
+            { title: "Ограничение ответственности", text: "LocalRent не несёт ответственности за технические сбои, временную недоступность сайта или неточности в информации. Цены и условия могут быть изменены без предварительного уведомления." },
+            { title: "Применимое право", text: "Настоящие условия регулируются законодательством Турецкой Республики. Все споры рассматриваются в судах г. Анталья." },
+          ].map((item, i) => (
+            <div key={i} style={{ borderBottom: "1px solid #eee", paddingBottom: 24, marginBottom: 24 }}>
+              <h3 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 17, fontWeight: 800, color: "#1a5c2a", marginBottom: 8 }}>{i + 1}. {item.title}</h3>
+              <p style={{ fontSize: 15, color: "#555", lineHeight: 1.7 }}>{item.text}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* DATA PROTECTION */}
+      {page === "dataprotection" && (
+        <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Защита персональных данных</h1>
+          <p style={{ color: "#888", marginBottom: 40 }}>В соответствии с законодательством Турецкой Республики (KVKK)</p>
+          {[
+            { title: "Основание обработки данных", text: "Обработка ваших персональных данных осуществляется на основании вашего согласия, выраженного при заполнении формы на сайте, в соответствии с Законом о защите персональных данных Турецкой Республики (KVKK № 6698)." },
+            { title: "Цели обработки", text: "Ваши данные обрабатываются исключительно для: оказания услуг аренды автомобилей, связи с вами по вопросам бронирования, выполнения договорных обязательств." },
+            { title: "Ваши права по KVKK", text: "Вы имеете право: узнать, обрабатываются ли ваши данные, запросить информацию об обработке, потребовать исправления неверных данных, потребовать удаления данных, обжаловать результаты обработки. Для реализации прав обратитесь: info@localrent.com.tr." },
+            { title: "Безопасность данных", text: "Мы принимаем все необходимые технические и организационные меры для защиты ваших данных от несанкционированного доступа, изменения, раскрытия или уничтожения." },
+          ].map((item, i) => (
+            <div key={i} style={{ borderBottom: "1px solid #eee", paddingBottom: 24, marginBottom: 24 }}>
+              <h3 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 17, fontWeight: 800, color: "#1a5c2a", marginBottom: 8 }}>{i + 1}. {item.title}</h3>
+              <p style={{ fontSize: 15, color: "#555", lineHeight: 1.7 }}>{item.text}</p>
+            </div>
+          ))}
+        </div>
+      )}
       {page === "terms" && (
         <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
           <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Условия аренды</h1>
