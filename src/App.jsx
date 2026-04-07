@@ -259,7 +259,7 @@ export default function App() {
         {/* HERO */}
         <div className="hero" style={{ padding: "72px 48px 80px", marginTop: 0(135deg, rgba(26,92,42,0.75) 0%, rgba(45,138,71,0.70) 60%, rgba(26,92,42,0.78) 100%), url(/antalya.jpg)", backgroundSize: "cover", backgroundPosition: "center", padding: "72px 48px 80px", position: "relative", overflow: "hidden" }}>
           <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center", position: "relative" }}>
-            <div style={{ display: "inline-block", background: "rgba(255,255,255,0.15)", borderRadius: 20, padding: "6px 20px", fontSize: 13, color: "#fff", fontWeight: 700, marginBottom: 20, letterSpacing: 1 }}>
+            <div style={{ display: "inline-block", background: "rgba(255,255,255,0.15)", borderRadius: 20, padding: "6px 20px", fontSize: 13, color: "#fff", fontWeight: 700, marginBottom: 8, letterSpacing: 1 }}>
               🚗 АРЕНДА АВТОМОБИЛЕЙ В ТУРЦИИ
             </div>
             <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: "clamp(36px,5vw,60px)", fontWeight: 900, color: "#fff", lineHeight: 1.1, marginBottom: 16 }}>
