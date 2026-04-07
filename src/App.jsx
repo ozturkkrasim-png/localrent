@@ -461,6 +461,7 @@ export default function App() {
                     <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, cursor: "pointer" }}
                       onMouseEnter={e => e.target.style.color = "#fff"}
                       onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.7)"}
+                      onClick={() => goTo("locations")} style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, cursor: "pointer" }}
                     >→ Аренда авто {city}</span>
                   </div>
                 ))}
