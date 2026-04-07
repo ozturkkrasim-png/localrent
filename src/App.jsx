@@ -466,21 +466,19 @@ export default function App() {
                 ))}
               </div>
 
-              <div>
+             <div>
                 <div style={{ fontWeight: 700, marginBottom: 14, fontSize: 14 }}>Правовая информация</div>
                 {[
-      ["Политика конфиденциальности", "privacy"],
-  ["Политика cookies", "cookies"],
-  ["Условия использования", "usage"],
-  ["Защита данных", "dataprotection"]
-].map(([item, pg]) => (
-  <div key={item} style={{ marginBottom: 8 }}>
-    <span onClick={() => goTo(pg)} style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, cursor: "pointer" }}
-      onMouseEnter={e => e.target.style.color = "#fff"}
-      onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.7)"}
-    >→ {item}</span>
-  </div>
-))}
+                  ["Политика конфиденциальности", "privacy"],
+                  ["Политика cookies", "cookies"],
+                  ["Условия использования", "usage"],
+                  ["Защита данных", "dataprotection"]
+                ].map(([item, pg]) => (
+                  <div key={item} style={{ marginBottom: 8 }}>
+                    <span onClick={() => goTo(pg)} style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, cursor: "pointer" }}
+                      onMouseEnter={e => e.target.style.color = "#fff"}
+                      onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.7)"}
+                    >→ {item}</span>
                   </div>
                 ))}
               </div>
