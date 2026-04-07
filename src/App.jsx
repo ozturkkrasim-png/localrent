@@ -458,11 +458,10 @@ export default function App() {
                 <div style={{ fontWeight: 700, marginBottom: 14, fontSize: 14 }}>Города</div>
                 {["Анталья", "Кемер", "Алания", "Бодрум", "Мармарис", "Фетхие", "Измир", "Стамбул"].map(city => (
                   <div key={city} style={{ marginBottom: 8 }}>
-                    <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, cursor: "pointer" }}
-                      onMouseEnter={e => e.target.style.color = "#fff"}
-                      onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.7)"}
-                      onClick={() => goTo("locations")} style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, cursor: "pointer" }}
-                    >→ Аренда авто {city}</span>
+                    <span onClick={() => goTo("locations")} style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, cursor: "pointer" }}
+  onMouseEnter={e => e.target.style.color = "#fff"}
+  onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.7)"}
+>→ Аренда авто {city}</span>
                   </div>
                 ))}
               </div>
