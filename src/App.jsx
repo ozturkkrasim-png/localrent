@@ -25,7 +25,7 @@ const blogs = [
     date: "01.04.2026",
     category: "Советы",
     image: "/antalya.jpg",
-    excerpt: "Аренда автомобиля в Анталье — лучший способ исследовать Турецкую Ривьеру. Рассказываем, как выбрать машину, что взять с собой и как сэкономить.",
+    excerpt: "Аренда автомобиля в Анталье — лучший способ исследовать Турецкую Ривьеру. Рассказываем, как Запросить цену машину, что взять с собой и как сэкономить.",
     content: `Анталья — один из самых популярных курортов Турции. Чтобы увидеть всё самое интересное, лучший вариант — арендовать автомобиль. Так вы сможете посетить Кемер, Аланью, Сиде и другие города в удобное время.\n\nЧто нужно для аренды:\n• Водительское удостоверение (стаж от 1 года)\n• Паспорт\n• Минимальный возраст — 21 год\n\nСоветы по экономии:\n• Бронируйте заранее — цены ниже\n• Выбирайте полную страховку\n• Проверяйте авто перед получением`
   },
   {
@@ -205,7 +205,7 @@ export default function App() {
               onMouseLeave={e => e.target.style.color = page === pg ? "#2d8a47" : "#444"}
             >{label}</span>
           ))}
-          <button className="green-btn" style={{ padding: "10px 22px", fontSize: 14 }} onClick={() => setPage("cars")}>Выбрать авто</button>
+          <button className="green-btn" style={{ padding: "10px 22px", fontSize: 14 }} onClick={() => setPage("cars")}>Запросить цену авто</button>
         </div>
       </nav>
 
@@ -315,7 +315,7 @@ export default function App() {
                       </div>
                       <div style={{ textAlign: "right" }}>
                         <div style={{ fontSize: 22, fontWeight: 800, color: "#2d8a47" }}>${car.price}</div>
-                        <div style={{ fontSize: 11, color: "#999" }}>/ сутки</div>
+                        <div style={{ fontSize: 11, color: "#999" }}>от ${car.price}$</div>
                       </div>
                     </div>
                     <div style={{ display: "flex", gap: 16, fontSize: 13, color: "#666", marginBottom: 14 }}>
@@ -324,7 +324,7 @@ export default function App() {
                       <span>❄️ {car.ac ? "Кондиционер" : "-"}</span>
                     </div>
                     <button className="green-btn" style={{ width: "100%", padding: "11px" }} onClick={e => { e.stopPropagation(); setSelectedCar(car); setPage("extras"); }}>
-                      Выбрать
+                      Запросить цену
                     </button>
                   </div>
                 </div>
@@ -448,7 +448,7 @@ export default function App() {
           <div style={{ fontSize: 15, color: "#444", lineHeight: 1.9, whiteSpace: "pre-line" }}>{blog.content}</div>
           <div style={{ marginTop: 40, background: "#f0f9f3", border: "1.5px solid #d0eeda", borderRadius: 12, padding: "24px", textAlign: "center" }}>
             <p style={{ fontWeight: 700, color: "#1a5c2a", marginBottom: 12 }}>Хотите арендовать авто в Анталье?</p>
-            <button className="green-btn" onClick={() => setPage("cars")}>Выбрать автомобиль →</button>
+            <button className="green-btn" onClick={() => setPage("cars")}>Запросить цену автомобиль →</button>
           </div>
         </div>
       ))}
@@ -719,7 +719,7 @@ export default function App() {
                     </div>
                     <div style={{ textAlign: "right" }}>
                       <div style={{ fontSize: 22, fontWeight: 800, color: "#2d8a47" }}>${days ? car.price * days : car.price}</div>
-                      <div style={{ fontSize: 11, color: "#999" }}>{days ? `за ${days} дн.` : "/ сутки"}</div>
+                      <div style={{ fontSize: 11, color: "#999" }}>{days ? `за ${days} дн.` : "от ${car.price}$"}</div>
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: 16, fontSize: 13, color: "#666", marginBottom: 14 }}>
@@ -728,7 +728,7 @@ export default function App() {
                     <span>⛽ {car.fuel}</span>
                   </div>
                   <button className="green-btn" style={{ width: "100%", padding: "11px" }} onClick={e => { e.stopPropagation(); setSelectedCar(car); setPage("extras"); }}>
-                    Выбрать этот автомобиль
+                    Запросить цену этот автомобиль
                   </button>
                 </div>
               </div>
