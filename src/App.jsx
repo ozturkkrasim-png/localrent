@@ -25,7 +25,7 @@ const blogs = [
     date: "01.04.2026",
     category: "Советы",
     image: "/antalya.jpg",
-    excerpt: "Аренда автомобиля в Анталье — лучший способ исследовать Турецкую Ривьеру. Рассказываем, как Запросить цену машину, что взять с собой и как сэкономить.",
+    excerpt: "Аренда автомобиля в Анталье — лучший способ исследовать Турецкую Ривьеру. Рассказываем, как выбрать машину, что взять с собой и как сэкономить.",
     content: `Анталья — один из самых популярных курортов Турции. Чтобы увидеть всё самое интересное, лучший вариант — арендовать автомобиль. Так вы сможете посетить Кемер, Аланью, Сиде и другие города в удобное время.\n\nЧто нужно для аренды:\n• Водительское удостоверение (стаж от 1 года)\n• Паспорт\n• Минимальный возраст — 21 год\n\nСоветы по экономии:\n• Бронируйте заранее — цены ниже\n• Выбирайте полную страховку\n• Проверяйте авто перед получением`
   },
   {
@@ -49,19 +49,19 @@ const blogs = [
 ];
 
 const cars = [
-  { id: 1, name: "Renault Clio", category: "Эконом", price: 22, seats: 5, transmission: "Механика", fuel: "Бензин", ac: true, image: "/cars/cli5.jpg", doors: 5 },
-  { id: 2, name: "Fiat Egea", category: "Комфорт", price: 35, seats: 5, transmission: "Автомат", fuel: "Бензин", ac: true, image: "/cars/egea.jpg", doors: 4 },
-  { id: 3, name: "Opel Corsa", category: "Эконом", price: 28, seats: 5, transmission: "Автомат", fuel: "Бензин", ac: true, image: "/cars/opel.jpg", doors: 5 },
-  { id: 4, name: "Dacia Duster", category: "SUV", price: 55, seats: 5, transmission: "Автомат", fuel: "Дизель", ac: true, image: "/cars/duster.jpg", doors: 5 },
-  { id: 5, name: "Citroen SpaceTourer", category: "Минивэн", price: 75, seats: 8, transmission: "Автомат", fuel: "Дизель", ac: true, image: "/cars/minivan.jpg", doors: 5 },
-  { id: 6, name: "Citroen C4X", category: "SUV", price: 65, seats: 5, transmission: "Автомат", fuel: "Бензин", ac: true, image: "/cars/citroenc4x.jpg", doors: 5 },
+  { id: 1, name: "Renault Clio", category: "Эконом", price: 22, seats: 5, transmission: "Механика", fuel: "Бензин", ac: true, image: "/cars/cli5.jpg" },
+  { id: 2, name: "Fiat Egea", category: "Комфорт", price: 35, seats: 5, transmission: "Автомат", fuel: "Бензин", ac: true, image: "/cars/egea.jpg" },
+  { id: 3, name: "Opel Corsa", category: "Эконом", price: 28, seats: 5, transmission: "Автомат", fuel: "Бензин", ac: true, image: "/cars/opel.jpg" },
+  { id: 4, name: "Dacia Duster", category: "SUV", price: 55, seats: 5, transmission: "Автомат", fuel: "Дизель", ac: true, image: "/cars/duster.jpg" },
+  { id: 5, name: "Citroen SpaceTourer", category: "Минивэн", price: 75, seats: 8, transmission: "Автомат", fuel: "Дизель", ac: true, image: "/cars/minivan.jpg" },
+  { id: 6, name: "Citroen C4X", category: "SUV", price: 65, seats: 5, transmission: "Автомат", fuel: "Бензин", ac: true, image: "/cars/citroenc4x.jpg" },
 ];
 
 const extras = [
-  { id: "gps", name: "GPS навигатор", price: 5, icon: "🗺️" },
-  { id: "seat", name: "Детское кресло", price: 5, icon: "👶" },
-  { id: "insurance", name: "Полная страховка", price: 10, icon: "🛡️" },
-  { id: "driver", name: "Второй водитель", price: 8, icon: "👤" },
+  { id: "gps", name: "GPS навигатор", icon: "🗺️" },
+  { id: "seat", name: "Детское кресло", icon: "👶" },
+  { id: "insurance", name: "Полная страховка", icon: "🛡️" },
+  { id: "driver", name: "Второй водитель", icon: "👤" },
 ];
 
 export default function App() {
@@ -73,7 +73,7 @@ export default function App() {
   const [done, setDone] = useState(false);
   const [reservationNo, setReservationNo] = useState("");
 
-  const sendEmail = (car, pickupDate, returnDate, days, total, resNo) => {
+  const sendEmail = (car, resNo) => {
     if (typeof window.emailjs === "undefined") return;
     window.emailjs.init("NOP4w5U43oGZ4P0RS");
     const params = {
@@ -82,13 +82,16 @@ export default function App() {
       phone: form.phone,
       email: form.email,
       car_name: car.name,
-      pickup_date: pickupDate || "-",
-      return_date: returnDate || "-",
+      pickup_date: search.pickupDate || "-",
+      return_date: search.returnDate || "-",
       pickup_location: search.pickup || "-",
-      total: total ? "$" + total : "$" + car.price,
+      return_location: search.returnLoc || search.pickup || "-",
+      pickup_time: search.pickupTime || "-",
+      return_time: search.returnTime || "-",
+      extras: selectedExtras.map(id => extras.find(e => e.id === id)?.name).join(", ") || "-",
       flight: form.flight || "-",
       notes: form.notes || "-",
-      message: "Новое бронирование от " + form.name,
+      message: "Новый запрос цены от " + form.name,
       title: car.name,
       reservation_no: resNo || "-",
     };
@@ -104,10 +107,6 @@ export default function App() {
     ? Math.max(1, Math.ceil((new Date(search.returnDate) - new Date(search.pickupDate)) / 86400000))
     : null;
 
-  const extraTotal = selectedExtras.reduce((s, eid) => s + (extras.find(e => e.id === eid)?.price || 0), 0);
-  const carPrice = selectedCar ? selectedCar.price * (days || 1) : 0;
-  const total = carPrice + extraTotal * (days || 1);
-
   const setS = (k, v) => setSearch(p => ({ ...p, [k]: v }));
 
   if (done) return (
@@ -115,14 +114,48 @@ export default function App() {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap');`}</style>
       <div style={{ background: "#fff", borderRadius: 16, padding: "56px 48px", textAlign: "center", maxWidth: 480, boxShadow: "0 8px 40px rgba(0,0,0,0.1)" }}>
         <div style={{ fontSize: 72, marginBottom: 20 }}>✅</div>
-        <h2 style={{ fontFamily: "Montserrat, sans-serif", fontSize: 28, color: "#1a5c2a", marginBottom: 12 }}>Бронирование подтверждено!</h2>
+        <h2 style={{ fontFamily: "Montserrat, sans-serif", fontSize: 28, color: "#1a5c2a", marginBottom: 12 }}>Запрос отправлен!</h2>
         <div style={{ background: "#f0f9f3", border: "2px solid #2d8a47", borderRadius: 10, padding: "16px 24px", marginBottom: 20 }}>
-          <div style={{ fontSize: 12, color: "#888", marginBottom: 4 }}>НОМЕР БРОНИРОВАНИЯ</div>
+          <div style={{ fontSize: 12, color: "#888", marginBottom: 4 }}>НОМЕР ЗАПРОСА</div>
           <div style={{ fontFamily: "Montserrat,sans-serif", fontSize: 28, fontWeight: 900, color: "#1a5c2a", letterSpacing: 2 }}>{reservationNo}</div>
         </div>
-        <p style={{ color: "#666", lineHeight: 1.7, marginBottom: 28 }}>Детали и номер бронирования отправлены на <b>{form.email}</b>.<br />Мы свяжемся с вами в течение 30 минут.</p>
-        <button onClick={() => { setDone(false); setPage("home"); setSelectedCar(null); setSelectedExtras([]); }} style={{ background: "#2d8a47", color: "#fff", border: "none", borderRadius: 8, padding: "14px 36px", fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
+        <p style={{ color: "#666", lineHeight: 1.7, marginBottom: 28 }}>
+          Мы получили ваш запрос и отправили подтверждение на <b>{form.email}</b>.<br />
+          Наш менеджер свяжется с вами в течение 30 минут и предложит лучшую цену.
+        </p>
+        <a href={`https://wa.me/${WHATSAPP}?text=Здравствуйте! Мой номер запроса: ${reservationNo}. Хочу уточнить цену.`} target="_blank" rel="noreferrer"
+          style={{ display: "block", background: "#25d366", color: "#fff", textDecoration: "none", borderRadius: 8, padding: "14px 36px", fontSize: 15, fontWeight: 700, marginBottom: 16 }}>
+          💬 Написать в WhatsApp
+        </a>
+        <button onClick={() => { setDone(false); setPage("home"); setSelectedCar(null); setSelectedExtras([]); }}
+          style={{ background: "#2d8a47", color: "#fff", border: "none", borderRadius: 8, padding: "14px 36px", fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
           На главную
+        </button>
+      </div>
+    </div>
+  );
+
+  const CarCard = ({ car }) => (
+    <div className="car-card" onClick={() => { setSelectedCar(car); setPage("extras"); }}>
+      <img src={car.image} alt={`${car.name} — аренда авто Анталья`} style={{ width: "100%", height: 180, objectFit: "cover" }} onError={e => e.target.style.display="none"} />
+      <div style={{ padding: "16px 20px 20px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
+          <div>
+            <span className="badge" style={{ background: "#e8f5ec", color: "#2d8a47", marginBottom: 6, display: "block", width: "fit-content" }}>{car.category}</span>
+            <div style={{ fontFamily: "Montserrat,sans-serif", fontSize: 17, fontWeight: 800 }}>{car.name}</div>
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <div style={{ fontSize: 16, fontWeight: 800, color: "#2d8a47" }}>от ${car.price}/день</div>
+            {days && <div style={{ fontSize: 11, color: "#999" }}>~{days} дн.</div>}
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: 16, fontSize: 13, color: "#666", marginBottom: 14 }}>
+          <span>👥 {car.seats}</span>
+          <span>⚙️ {car.transmission}</span>
+          <span>⛽ {car.fuel}</span>
+        </div>
+        <button className="green-btn" style={{ width: "100%", padding: "11px" }} onClick={e => { e.stopPropagation(); setSelectedCar(car); setPage("extras"); }}>
+          Запросить цену
         </button>
       </div>
     </div>
@@ -142,7 +175,6 @@ export default function App() {
         .outline-btn:hover { background: #2d8a47; color: #fff; }
         .car-card { border: 2px solid #e8e8e8; border-radius: 14px; overflow: hidden; transition: all .3s; cursor: pointer; background: #fff; }
         .car-card:hover { border-color: #2d8a47; box-shadow: 0 8px 32px rgba(45,138,71,0.12); transform: translateY(-2px); }
-        .car-card.selected { border-color: #2d8a47; background: #f0f9f3; }
         .badge { display:inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
         .extra-card { border: 2px solid #e8e8e8; border-radius: 10px; padding: 14px; cursor: pointer; transition: all .2s; text-align: center; }
         .extra-card:hover { border-color: #2d8a47; }
@@ -164,7 +196,6 @@ export default function App() {
           .cars-grid { grid-template-columns: 1fr !important; }
           .blog-grid { grid-template-columns: 1fr !important; }
           .features-grid { grid-template-columns: repeat(3,1fr) !important; }
-          .footer-inner { flex-direction: column !important; text-align: center; }
           .booking-grid { grid-template-columns: 1fr !important; }
           .about-grid { grid-template-columns: 1fr !important; }
           .locations-grid { grid-template-columns: 1fr 1fr !important; }
@@ -205,14 +236,13 @@ export default function App() {
               onMouseLeave={e => e.target.style.color = page === pg ? "#2d8a47" : "#444"}
             >{label}</span>
           ))}
-          <button className="green-btn" style={{ padding: "10px 22px", fontSize: 14 }} onClick={() => setPage("cars")}>Запросить цену авто</button>
+          <button className="green-btn" style={{ padding: "10px 22px", fontSize: 14 }} onClick={() => setPage("cars")}>Запросить цену</button>
         </div>
       </nav>
 
       {page === "home" && <>
         {/* HERO */}
         <div className="hero" style={{ backgroundImage: "linear-gradient(135deg, rgba(26,92,42,0.75) 0%, rgba(45,138,71,0.70) 60%, rgba(26,92,42,0.78) 100%), url(/antalya.jpg)", backgroundSize: "cover", backgroundPosition: "center", padding: "72px 48px 80px", position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", right: -80, top: -80, width: 500, height: 500, borderRadius: "50%", background: "rgba(255,255,255,0.05)", pointerEvents: "none" }} />
           <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center", position: "relative" }}>
             <div style={{ display: "inline-block", background: "rgba(255,255,255,0.15)", borderRadius: 20, padding: "6px 20px", fontSize: 13, color: "#fff", fontWeight: 700, marginBottom: 20, letterSpacing: 1 }}>
               🚗 АРЕНДА АВТОМОБИЛЕЙ В ТУРЦИИ
@@ -299,36 +329,12 @@ export default function App() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 36 }}>
               <div>
                 <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a" }}>Наш автопарк</h2>
-                <p style={{ color: "#888", marginTop: 4 }}>Выберите идеальный автомобиль для вашей поездки</p>
+                <p style={{ color: "#888", marginTop: 4 }}>Запросите цену на любой автомобиль</p>
               </div>
               <button className="outline-btn" onClick={() => setPage("cars")}>Все автомобили →</button>
             </div>
             <div className="cars-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
-              {cars.slice(0,3).map(car => (
-                <div key={car.id} className="car-card" onClick={() => { setSelectedCar(car); setPage("extras"); }}>
-                  <img src={car.image} alt={`${car.name} — аренда авто Анталья`} style={{ width: "100%", height: 180, objectFit: "cover" }} onError={e => e.target.style.display="none"} />
-                  <div style={{ padding: "16px 20px 20px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
-                      <div>
-                        <span className="badge" style={{ background: "#e8f5ec", color: "#2d8a47", marginBottom: 6, display: "block", width: "fit-content" }}>{car.category}</span>
-                        <div style={{ fontFamily: "Montserrat,sans-serif", fontSize: 17, fontWeight: 800 }}>{car.name}</div>
-                      </div>
-                      <div style={{ textAlign: "right" }}>
-                        <div style={{ fontSize: 22, fontWeight: 800, color: "#2d8a47" }}>${car.price}</div>
-                        <div style={{ fontSize: 11, color: "#999" }}>от ${car.price}$</div>
-                      </div>
-                    </div>
-                    <div style={{ display: "flex", gap: 16, fontSize: 13, color: "#666", marginBottom: 14 }}>
-                      <span>👥 {car.seats}</span>
-                      <span>⚙️ {car.transmission}</span>
-                      <span>❄️ {car.ac ? "Кондиционер" : "-"}</span>
-                    </div>
-                    <button className="green-btn" style={{ width: "100%", padding: "11px" }} onClick={e => { e.stopPropagation(); setSelectedCar(car); setPage("extras"); }}>
-                      Запросить цену
-                    </button>
-                  </div>
-                </div>
-              ))}
+              {cars.slice(0,3).map(car => <CarCard key={car.id} car={car} />)}
             </div>
           </div>
         </div>
@@ -361,7 +367,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* FEATURES SECTION */}
+        {/* FEATURES */}
         <div style={{ background: "#1a5c2a", padding: "60px 48px" }}>
           <div style={{ maxWidth: 1000, margin: "0 auto" }}>
             <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 24, fontWeight: 900, color: "#fff", textAlign: "center", marginBottom: 8 }}>
@@ -413,7 +419,7 @@ export default function App() {
         </footer>
       </>}
 
-      {/* BLOG PAGE */}
+      {/* BLOG */}
       {page === "blog" && (
         <div style={{ maxWidth: 960, margin: "0 auto", padding: "40px 48px" }}>
           <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Блог</h1>
@@ -426,7 +432,7 @@ export default function App() {
                   <span style={{ background: "#e8f5ec", color: "#2d8a47", borderRadius: 20, padding: "3px 10px", fontSize: 12, fontWeight: 700 }}>{blog.category}</span>
                   <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 16, fontWeight: 800, color: "#1a5c2a", margin: "10px 0 8px", lineHeight: 1.4 }}>{blog.title}</h2>
                   <p style={{ fontSize: 13, color: "#888", lineHeight: 1.6, marginBottom: 12 }}>{blog.excerpt}</p>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <span style={{ fontSize: 12, color: "#bbb" }}>{blog.date}</span>
                     <span style={{ fontSize: 13, color: "#2d8a47", fontWeight: 700 }}>Читать →</span>
                   </div>
@@ -437,38 +443,37 @@ export default function App() {
         </div>
       )}
 
-      {/* BLOG DETAIL PAGES */}
       {blogs.map(blog => page === "blog-" + blog.id && (
         <div key={blog.id} style={{ maxWidth: 760, margin: "0 auto", padding: "40px 48px" }}>
           <button onClick={() => setPage("blog")} style={{ background: "none", border: "none", color: "#2d8a47", fontWeight: 700, cursor: "pointer", fontSize: 14, marginBottom: 24, padding: 0 }}>← Назад в блог</button>
           <img src={blog.image} alt={blog.title} style={{ width: "100%", height: 300, objectFit: "cover", borderRadius: 14, marginBottom: 28 }} />
           <span style={{ background: "#e8f5ec", color: "#2d8a47", borderRadius: 20, padding: "3px 10px", fontSize: 12, fontWeight: 700 }}>{blog.category}</span>
-          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 28, fontWeight: 900, color: "#1a5c2a", margin: "12px 0 8px", lineHeight: 1.3 }}>{blog.title}</h1>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 28, fontWeight: 900, color: "#1a5c2a", margin: "12px 0 8px" }}>{blog.title}</h1>
           <div style={{ fontSize: 13, color: "#bbb", marginBottom: 24 }}>{blog.date}</div>
           <div style={{ fontSize: 15, color: "#444", lineHeight: 1.9, whiteSpace: "pre-line" }}>{blog.content}</div>
           <div style={{ marginTop: 40, background: "#f0f9f3", border: "1.5px solid #d0eeda", borderRadius: 12, padding: "24px", textAlign: "center" }}>
             <p style={{ fontWeight: 700, color: "#1a5c2a", marginBottom: 12 }}>Хотите арендовать авто в Анталье?</p>
-            <button className="green-btn" onClick={() => setPage("cars")}>Запросить цену автомобиль →</button>
+            <button className="green-btn" onClick={() => setPage("cars")}>Запросить цену →</button>
           </div>
         </div>
       ))}
 
-     {/* FAQ PAGE */}
+      {/* FAQ */}
       {page === "faq" && (
         <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
           <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Часто задаваемые вопросы</h1>
           <p style={{ color: "#888", marginBottom: 40 }}>Ответы на самые популярные вопросы об аренде авто</p>
           {[
-            { q: "Какие документы нужны для аренды?", a: "Для аренды автомобиля необходимы действующее водительское удостоверение (стаж от 1 года) и паспорт. Для граждан стран, не подписавших Венскую конвенцию, потребуется международное водительское удостоверение." },
-            { q: "Есть ли скрытые платежи?", a: "Нет. Наши цены окончательные и включают все налоги, страховку и услуги. Никаких дополнительных комиссий при получении или возврате автомобиля." },
-            { q: "Можно ли оплатить наличными?", a: "Да, мы принимаем оплату как наличными, так и банковской картой. Залог и предоплата не требуются." },
-            { q: "Доставляете ли вы авто в аэропорт?", a: "Да, мы бесплатно доставляем автомобиль в аэропорт Анталья (AYT), а также в любой отель или указанный адрес. При возврате также можем забрать машину у вас." },
-            { q: "Что входит в страховку?", a: "Полное КАСКО без франшизы, страхование от угона и пожара, покрытие шин, стёкол, зеркал и днища. Также включено страхование от несчастных случаев для всех пассажиров." },
-            { q: "Можно ли взять второго водителя?", a: "Да, второй водитель добавляется бесплатно. Все водители должны иметь действующее водительское удостоверение." },
-            { q: "Есть ли ограничение по пробегу?", a: "Нет, пробег неограниченный. Вы можете ездить столько, сколько нужно, без дополнительной оплаты." },
-            { q: "Что делать если машина сломалась?", a: "Звоните на наш номер 24/7. Мы окажем помощь на дороге и при необходимости заменим автомобиль бесплатно." },
-            { q: "Можно ли отменить бронирование?", a: "Да. Отмена за 7 и более дней — полный возврат средств. Отмена менее чем за 7 дней — удерживается 10% от суммы. Отмена после времени доставки — оплата за 3 дня аренды." },
-            { q: "Как забронировать автомобиль?", a: "Выберите автомобиль на сайте и заполните форму бронирования, или напишите нам в WhatsApp. Мы ответим в течение 30 минут и подтвердим бронирование." },
+            { q: "Какие документы нужны для аренды?", a: "Действующее водительское удостоверение (стаж от 1 года) и паспорт. Для граждан стран, не подписавших Венскую конвенцию, требуется международное водительское удостоверение." },
+            { q: "Есть ли скрытые платежи?", a: "Нет. Наши цены окончательные и включают все налоги и страховку. Никаких дополнительных комиссий." },
+            { q: "Можно ли оплатить наличными?", a: "Да, принимаем наличные и банковские карты. Залог и предоплата не требуются." },
+            { q: "Доставляете ли вы авто в аэропорт?", a: "Да, бесплатно доставляем в аэропорт Анталья (AYT) и любой отель. При возврате забираем у вас." },
+            { q: "Что входит в страховку?", a: "Полное КАСКО без франшизы, страхование от угона и пожара, покрытие шин, стёкол, зеркал и днища." },
+            { q: "Можно ли взять второго водителя?", a: "Да, второй водитель добавляется бесплатно." },
+            { q: "Есть ли ограничение по пробегу?", a: "Нет, пробег неограниченный." },
+            { q: "Что делать если машина сломалась?", a: "Звоните 24/7. Окажем помощь и при необходимости заменим автомобиль бесплатно." },
+            { q: "Можно ли отменить бронирование?", a: "Отмена за 7+ дней — полный возврат. Менее 7 дней — удерживается 10%." },
+            { q: "Как получить цену?", a: "Выберите авто, заполните форму — мы свяжемся в течение 30 минут с лучшим предложением." },
           ].map((item, i) => (
             <div key={i} style={{ borderBottom: "1px solid #eee", paddingBottom: 24, marginBottom: 24 }}>
               <div style={{ fontFamily: "Montserrat,sans-serif", fontSize: 16, fontWeight: 800, color: "#1a5c2a", marginBottom: 10, display: "flex", gap: 12, alignItems: "flex-start" }}>
@@ -479,14 +484,15 @@ export default function App() {
             </div>
           ))}
           <div style={{ background: "#1a5c2a", borderRadius: 14, padding: "28px 36px", color: "#fff", textAlign: "center", marginTop: 20 }}>
-            <p style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}>Не нашли ответ на свой вопрос?</p>
+            <p style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}>Не нашли ответ?</p>
             <a href="https://wa.me/905400070095" target="_blank" rel="noreferrer" style={{ background: "#25d366", color: "#fff", textDecoration: "none", borderRadius: 8, padding: "12px 28px", fontWeight: 700, fontSize: 14 }}>
               💬 Написать в WhatsApp
             </a>
           </div>
         </div>
       )}
-      {/* ABOUT PAGE */}
+
+      {/* ABOUT */}
       {page === "about" && (
         <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
           <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>О нас</h1>
@@ -494,9 +500,8 @@ export default function App() {
           <div className="about-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, marginBottom: 48 }}>
             <div>
               <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 22, fontWeight: 800, color: "#1a5c2a", marginBottom: 16 }}>Наша история</h2>
-              <p style={{ fontSize: 15, color: "#555", lineHeight: 1.8, marginBottom: 16 }}>LocalRent — местная компания по аренде автомобилей, основанная в 2012 году в Анталье. За более чем 12 лет работы мы помогли тысячам туристов со всего мира исследовать красоту Турции за рулём надёжного автомобиля.</p>
-              <p style={{ fontSize: 15, color: "#555", lineHeight: 1.8, marginBottom: 16 }}>Мы сами много путешествовали по разным странам мира и прекрасно понимаем, что значит быть туристом. Поэтому наш главный приоритет — сделать аренду автомобиля максимально простой, прозрачной и комфортной.</p>
-              <p style={{ fontSize: 15, color: "#555", lineHeight: 1.8 }}>Зная, что выбор арендного автомобиля может быть непростой задачей, мы всегда готовы помочь вам сделать правильный выбор. Поддержка на русском языке — 24/7.</p>
+              <p style={{ fontSize: 15, color: "#555", lineHeight: 1.8, marginBottom: 16 }}>LocalRent — местная компания по аренде автомобилей, основанная в 2012 году в Анталье. За более чем 12 лет работы мы помогли тысячам туристов исследовать красоту Турции.</p>
+              <p style={{ fontSize: 15, color: "#555", lineHeight: 1.8 }}>Наш приоритет — простая, прозрачная и комфортная аренда. Поддержка на русском языке — 24/7.</p>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               {[["12+", "лет на рынке"], ["5000+", "довольных клиентов"], ["6", "моделей автомобилей"], ["24/7", "поддержка на русском"]].map(([num, label]) => (
@@ -507,20 +512,10 @@ export default function App() {
               ))}
             </div>
           </div>
-          <div style={{ background: "#f9fdf9", border: "1.5px solid #d0eeda", borderRadius: 14, padding: "32px 36px" }}>
-            <h3 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 18, fontWeight: 800, color: "#1a5c2a", marginBottom: 20 }}>Почему клиенты выбирают нас</h3>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              {[["✅", "Честные цены без скрытых комиссий"], ["✅", "Новые автомобили не старше 3 лет"], ["✅", "Полная страховка включена"], ["✅", "Бесплатная доставка в аэропорт Анталья"], ["✅", "Поддержка на русском языке 24/7"], ["✅", "Бесплатный второй водитель"], ["✅", "Неограниченный пробег"], ["✅", "Замена автомобиля при поломке"]].map(([ic, text]) => (
-                <div key={text} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 14, color: "#444" }}>
-                  <span style={{ color: "#2d8a47", fontWeight: 700 }}>{ic}</span> {text}
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       )}
 
-      {/* LOCATIONS PAGE */}
+      {/* LOCATIONS */}
       {page === "locations" && (
         <div style={{ maxWidth: 960, margin: "0 auto", padding: "40px 48px" }}>
           <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Локации выдачи</h1>
@@ -534,7 +529,7 @@ export default function App() {
               { city: "Мармарис", icon: "🌊", locations: ["Центр Мармарис", "Ичмелер", "Армутлан", "Датча", "Бозбурун"] },
               { city: "Фетхие", icon: "🪂", locations: ["Центр Фетхие", "Олюдениз", "Хисаранью", "Каякёй", "Гёчек"] },
             ].map(({ city, icon, locations }) => (
-              <div key={city} style={{ background: "#fff", border: "1.5px solid #e8f5ec", borderRadius: 14, padding: "24px", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
+              <div key={city} style={{ background: "#fff", border: "1.5px solid #e8f5ec", borderRadius: 14, padding: "24px" }}>
                 <div style={{ fontSize: 32, marginBottom: 10 }}>{icon}</div>
                 <h3 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 17, fontWeight: 800, color: "#1a5c2a", marginBottom: 12 }}>{city}</h3>
                 {locations.map(loc => (
@@ -546,9 +541,8 @@ export default function App() {
             ))}
           </div>
           <div style={{ background: "#1a5c2a", borderRadius: 14, padding: "28px 36px", color: "#fff", textAlign: "center" }}>
-            <div style={{ fontSize: 24, marginBottom: 8 }}>📞</div>
             <p style={{ fontSize: 16, fontWeight: 700, marginBottom: 6 }}>Не нашли свою локацию?</p>
-            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", marginBottom: 16 }}>Свяжитесь с нами — мы доставим автомобиль куда угодно!</p>
+            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", marginBottom: 16 }}>Мы доставим автомобиль куда угодно!</p>
             <a href="https://wa.me/905400070095" target="_blank" rel="noreferrer" style={{ background: "#25d366", color: "#fff", textDecoration: "none", borderRadius: 8, padding: "12px 28px", fontWeight: 700, fontSize: 14 }}>
               💬 Написать в WhatsApp
             </a>
@@ -556,11 +550,11 @@ export default function App() {
         </div>
       )}
 
-      {/* CONTACT PAGE */}
+      {/* CONTACT */}
       {page === "contact" && (
         <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
           <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Контакты</h1>
-          <p style={{ color: "#888", marginBottom: 40 }}>Мы всегда на связи — напишите или позвоните нам</p>
+          <p style={{ color: "#888", marginBottom: 40 }}>Мы всегда на связи</p>
           <div className="contact-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40 }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               {[
@@ -569,7 +563,7 @@ export default function App() {
                 { icon: "📸", title: "Instagram", value: "@localrent.com.tr", href: "https://instagram.com/localrent.com.tr" },
                 { icon: "✉️", title: "Email", value: "info@localrent.com.tr", href: "mailto:info@localrent.com.tr" },
                 { icon: "📍", title: "Адрес", value: "Анталья, Турция", href: null },
-                { icon: "🕐", title: "Режим работы", value: "Пн–Вс: 08:00 – 22:00", href: null },
+                { icon: "🕐", title: "Режим работы", value: "Пн–Вс: 00:00 – 24:00", href: null },
               ].map(({ icon, title, value, href }) => (
                 <div key={title} style={{ display: "flex", alignItems: "center", gap: 16, background: "#f9fdf9", border: "1.5px solid #e8f5ec", borderRadius: 10, padding: "16px 20px" }}>
                   <span style={{ fontSize: 28 }}>{icon}</span>
@@ -594,102 +588,85 @@ export default function App() {
                   <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 5, textTransform: "uppercase", letterSpacing: 0.5 }}>Сообщение</div>
                   <textarea placeholder="Ваш вопрос..." className="sel" aria-label="Сообщение" style={{ resize: "vertical", minHeight: 90 }} />
                 </div>
-                <button className="green-btn" style={{ width: "100%" }}>Отправить сообщение</button>
+                <button className="green-btn" style={{ width: "100%" }}>Отправить</button>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* RESERVATION PAGE */}
+      {/* RESERVATION */}
       {page === "reservation" && (
         <div style={{ maxWidth: 760, margin: "0 auto", padding: "40px 48px" }}>
-          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Бронирование</h1>
-          <p style={{ color: "#888", marginBottom: 36 }}>Заполните форму — мы подберём лучший автомобиль для вас</p>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Запрос цены</h1>
+          <p style={{ color: "#888", marginBottom: 36 }}>Выберите даты — мы пришлём лучшее предложение</p>
           <div style={{ background: "#f9fdf9", border: "1.5px solid #d0eeda", borderRadius: 14, padding: "32px" }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
               <div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Место получения</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase" }}>Место получения</div>
                 <select aria-label="Место получения" className="sel" value={search.pickup} onChange={e => setS("pickup", e.target.value)}>
                   <option value="">Выберите локацию</option>
                   {cities.map(c => <option key={c}>{c}</option>)}
                 </select>
               </div>
               <div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Место возврата</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase" }}>Место возврата</div>
                 <select aria-label="Место возврата" className="sel" value={search.returnLoc} onChange={e => setS("returnLoc", e.target.value)}>
                   <option value="">То же место</option>
                   {cities.map(c => <option key={c}>{c}</option>)}
                 </select>
               </div>
               <div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Дата получения</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase" }}>Дата получения</div>
                 <input type="date" aria-label="Дата получения" className="sel" value={search.pickupDate} onChange={e => setS("pickupDate", e.target.value)} />
               </div>
               <div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Время получения</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase" }}>Время получения</div>
                 <select aria-label="Время получения" className="sel" value={search.pickupTime} onChange={e => setS("pickupTime", e.target.value)}>
                   {times.map(t => <option key={t}>{t}</option>)}
                 </select>
               </div>
               <div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Дата возврата</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase" }}>Дата возврата</div>
                 <input type="date" aria-label="Дата возврата" className="sel" value={search.returnDate} onChange={e => setS("returnDate", e.target.value)} />
               </div>
               <div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Время возврата</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase" }}>Время возврата</div>
                 <select aria-label="Время возврата" className="sel" value={search.returnTime} onChange={e => setS("returnTime", e.target.value)}>
                   {times.map(t => <option key={t}>{t}</option>)}
                 </select>
               </div>
             </div>
-            <div style={{ borderTop: "1px solid #d0eeda", paddingTop: 20, marginBottom: 20 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#1a5c2a", marginBottom: 14 }}>Категория автомобиля</div>
-              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                {["Любая", "Эконом", "Комфорт", "SUV", "Минивэн"].map(cat => (
-                  <button key={cat} onClick={() => setS("category", cat)}
-                    style={{ padding: "8px 18px", borderRadius: 8, border: "1.5px solid", borderColor: search.category === cat ? "#2d8a47" : "#ddd", background: search.category === cat ? "#2d8a47" : "#fff", color: search.category === cat ? "#fff" : "#555", fontFamily: "Nunito,sans-serif", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
-                    {cat}
-                  </button>
-                ))}
-              </div>
-            </div>
             <button className="green-btn" style={{ width: "100%", padding: 16, fontSize: 16 }} onClick={() => setPage("cars")}>
-              🔍 Показать доступные автомобили
+              🚗 Выбрать автомобиль
             </button>
           </div>
-          <div style={{ marginTop: 28, background: "#fff", border: "1.5px solid #e8f5ec", borderRadius: 14, padding: "24px 32px" }}>
-            <p style={{ fontSize: 14, color: "#888", textAlign: "center", marginBottom: 16 }}>Предпочитаете забронировать через WhatsApp?</p>
-            <a href="https://wa.me/905400070095?text=Здравствуйте! Хочу забронировать автомобиль." target="_blank" rel="noreferrer"
-              style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, background: "#25d366", color: "#fff", textDecoration: "none", borderRadius: 8, padding: "13px", fontFamily: "Nunito,sans-serif", fontWeight: 700, fontSize: 15 }}>
+          <div style={{ marginTop: 28, background: "#fff", border: "1.5px solid #e8f5ec", borderRadius: 14, padding: "24px 32px", textAlign: "center" }}>
+            <p style={{ fontSize: 14, color: "#888", marginBottom: 16 }}>Или получите цену напрямую в WhatsApp</p>
+            <a href="https://wa.me/905400070095?text=Здравствуйте! Хочу узнать цену на аренду автомобиля." target="_blank" rel="noreferrer"
+              style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "#25d366", color: "#fff", textDecoration: "none", borderRadius: 8, padding: "13px 28px", fontWeight: 700, fontSize: 15 }}>
               💬 Написать в WhatsApp
             </a>
           </div>
         </div>
       )}
 
-      {/* TERMS PAGE */}
+      {/* TERMS */}
       {page === "terms" && (
         <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
           <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Условия аренды</h1>
-          <p style={{ color: "#888", marginBottom: 40 }}>Пожалуйста, ознакомьтесь с условиями перед бронированием</p>
+          <p style={{ color: "#888", marginBottom: 40 }}>Пожалуйста, ознакомьтесь перед бронированием</p>
           {[
-            { icon: "🪪", title: "Водительское удостоверение", text: "Требуется действующее национальное водительское удостоверение с паспортом или удостоверением личности. Для граждан стран, не подписавших Венскую конвенцию 1968 года, требуется международное водительское удостоверение." },
-            { icon: "👤", title: "Минимальный возраст", text: "Все водители должны иметь стаж вождения не менее 1 года. Минимальный возраст: 21 год — для классов Small/Эконом; 23 года — для классов Medium/Комфорт и SUV; 25 лет — для премиум-классов и микроавтобусов. Максимальный возраст — 79 лет." },
-            { icon: "🛣️", title: "Неограниченный пробег", text: "Суточного лимита пробега нет. Вы можете ездить сколько угодно без дополнительной оплаты." },
-            { icon: "💰", title: "Все налоги включены", text: "Наши цены окончательные и включают все налоги и услуги. Никаких скрытых платежей." },
-            { icon: "🔧", title: "Помощь на дороге 24/7", text: "Мы обеспечиваем техническую помощь на дороге круглосуточно." },
-            { icon: "✈️", title: "Доставка в аэропорт/отель", text: "Мы доставим автомобиль в аэропорт, порт или прямо в ваш отель." },
-            { icon: "🛡️", title: "Полная страховка", text: "Включает: КАСКО без франшизы, полное покрытие пожара, кражи, колёс, шин, стёкол, зеркал и повреждений снизу автомобиля, страхование от несчастных случаев для всех пассажиров." },
-            { icon: "🔄", title: "Замена автомобиля", text: "В случае поломки мы заменим ваш автомобиль новым." },
-            { icon: "👥", title: "Второй водитель бесплатно", text: "Дополнительная плата за второго водителя не взимается." },
-            { icon: "🚗", title: "Новые автомобили", text: "Для вашей безопасности мы регулярно обновляем автопарк новыми автомобилями." },
-            { icon: "⏰", title: "Нет доплаты за задержку", text: "Если ваш рейс задержится, дополнительная плата за ожидание не взимается." },
-            { icon: "👶", title: "Детские кресла бесплатно", text: "Мы предоставляем детские кресла высокой безопасности бесплатно." },
-            { icon: "🔑", title: "Потеря ключей", text: "В случае утери ключей клиент оплачивает замену: от 50 до 150 евро в зависимости от модели автомобиля, плюс транспортные расходы." },
-            { icon: "🚦", title: "Штрафы за нарушение ПДД", text: "Все штрафы и административные санкции за нарушения ПДД в период аренды оплачивает арендатор." },
-            { icon: "❌", title: "Условия отмены", text: "Отмена за 7 и более дней до начала аренды — полный возврат средств. Отмена менее чем за 7 дней — удерживается 10% от суммы бронирования." },
-            { icon: "🔒", title: "Политика конфиденциальности", text: "Мы уважаем вашу конфиденциальность и не передаём личные данные третьим лицам." },
+            { icon: "🪪", title: "Водительское удостоверение", text: "Действующее национальное ВУ с паспортом. Для стран вне Венской конвенции — международное ВУ." },
+            { icon: "👤", title: "Минимальный возраст", text: "21 год — Эконом; 23 года — Комфорт/SUV; 25 лет — Минивэн. Стаж вождения от 1 года." },
+            { icon: "🛣️", title: "Неограниченный пробег", text: "Без суточного лимита пробега." },
+            { icon: "💰", title: "Все налоги включены", text: "Цены окончательные, скрытых платежей нет." },
+            { icon: "🔧", title: "Помощь на дороге 24/7", text: "Техническая помощь круглосуточно." },
+            { icon: "✈️", title: "Доставка в аэропорт/отель", text: "Доставим в аэропорт, порт или отель." },
+            { icon: "🛡️", title: "Полная страховка", text: "КАСКО без франшизы, угон, пожар, шины, стёкла, зеркала, днище." },
+            { icon: "🔄", title: "Замена автомобиля", text: "При поломке заменим бесплатно." },
+            { icon: "👥", title: "Второй водитель бесплатно", text: "Без дополнительной платы." },
+            { icon: "❌", title: "Условия отмены", text: "7+ дней — полный возврат. Менее 7 дней — удерживается 10%." },
           ].map((item, i) => (
             <div key={i} style={{ borderBottom: "1px solid #eee", paddingBottom: 24, marginBottom: 24, display: "flex", gap: 20 }}>
               <div style={{ fontSize: 36, flexShrink: 0, width: 50, textAlign: "center" }}>{item.icon}</div>
@@ -702,51 +679,27 @@ export default function App() {
         </div>
       )}
 
-      {/* CARS PAGE */}
+      {/* CARS */}
       {page === "cars" && (
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 48px" }}>
           <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 28, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Все автомобили</h2>
-          <p style={{ color: "#888", marginBottom: 32 }}>Выберите подходящий вариант</p>
+          <p style={{ color: "#888", marginBottom: 32 }}>Выберите авто — мы пришлём лучшую цену в течение 30 минут</p>
           <div className="cars-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
-            {cars.map(car => (
-              <div key={car.id} className={`car-card ${selectedCar?.id === car.id ? "selected" : ""}`} onClick={() => setSelectedCar(car)}>
-                <img src={car.image} alt={`${car.name} — аренда авто Анталья`} style={{ width: "100%", height: 180, objectFit: "cover" }} onError={e => e.target.style.display="none"} />
-                <div style={{ padding: "16px 20px 20px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
-                    <div>
-                      <span className="badge" style={{ background: "#e8f5ec", color: "#2d8a47", marginBottom: 6, display: "block", width: "fit-content" }}>{car.category}</span>
-                      <div style={{ fontFamily: "Montserrat,sans-serif", fontSize: 17, fontWeight: 800 }}>{car.name}</div>
-                    </div>
-                    <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: 22, fontWeight: 800, color: "#2d8a47" }}>${days ? car.price * days : car.price}</div>
-                      <div style={{ fontSize: 11, color: "#999" }}>{days ? `за ${days} дн.` : "от ${car.price}$"}</div>
-                    </div>
-                  </div>
-                  <div style={{ display: "flex", gap: 16, fontSize: 13, color: "#666", marginBottom: 14 }}>
-                    <span>👥 {car.seats} мест</span>
-                    <span>⚙️ {car.transmission}</span>
-                    <span>⛽ {car.fuel}</span>
-                  </div>
-                  <button className="green-btn" style={{ width: "100%", padding: "11px" }} onClick={e => { e.stopPropagation(); setSelectedCar(car); setPage("extras"); }}>
-                    Запросить цену этот автомобиль
-                  </button>
-                </div>
-              </div>
-            ))}
+            {cars.map(car => <CarCard key={car.id} car={car} />)}
           </div>
         </div>
       )}
 
-      {/* EXTRAS PAGE */}
+      {/* EXTRAS */}
       {page === "extras" && selectedCar && (
         <div style={{ maxWidth: 900, margin: "0 auto", padding: "40px 48px" }}>
           <div className="step-bar">
-            {["Автомобиль", "Доп. услуги", "Ваши данные", "Подтверждение"].map((s, i) => (
+            {["Автомобиль", "Доп. услуги", "Ваши данные", "Готово"].map((s, i) => (
               <div key={s} className={`step ${i === 1 ? "active" : i < 1 ? "done-step" : ""}`}>{i < 1 ? "✓ " : ""}{s}</div>
             ))}
           </div>
           <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 24, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>Дополнительные услуги</h2>
-          <p style={{ color: "#888", marginBottom: 28 }}>Выберите что нужно для комфортной поездки</p>
+          <p style={{ color: "#888", marginBottom: 28 }}>Выберите что нужно — укажем в запросе</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: 32 }}>
             <div>
               <div className="extras-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 28 }}>
@@ -755,7 +708,9 @@ export default function App() {
                     onClick={() => setSelectedExtras(p => p.includes(ex.id) ? p.filter(x => x !== ex.id) : [...p, ex.id])}>
                     <div style={{ fontSize: 32, marginBottom: 8 }}>{ex.icon}</div>
                     <div style={{ fontWeight: 700, marginBottom: 4 }}>{ex.name}</div>
-                    <div style={{ color: "#2d8a47", fontWeight: 800 }}>+${ex.price}/день</div>
+                    <div style={{ color: "#2d8a47", fontWeight: 600, fontSize: 13 }}>
+                      {selectedExtras.includes(ex.id) ? "✓ Добавлено" : "Добавить"}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -764,27 +719,26 @@ export default function App() {
               </button>
             </div>
             <div className="info-box">
-              <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 16, color: "#1a5c2a" }}>Ваш заказ</div>
+              <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 16, color: "#1a5c2a" }}>Ваш запрос</div>
               <img src={selectedCar.image} alt={selectedCar.name} style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 8, marginBottom: 14 }} onError={e => e.target.style.display="none"} />
               <div style={{ fontWeight: 700, marginBottom: 4 }}>{selectedCar.name}</div>
-              <div style={{ fontSize: 13, color: "#888", marginBottom: 14 }}>{selectedCar.category} · {selectedCar.transmission}</div>
+              <div style={{ fontSize: 13, color: "#888", marginBottom: 4 }}>{selectedCar.category} · {selectedCar.transmission}</div>
+              <div style={{ fontSize: 16, fontWeight: 800, color: "#2d8a47", marginBottom: 14 }}>от ${selectedCar.price}/день</div>
               {days && <div style={{ fontSize: 13, color: "#666", marginBottom: 4 }}>🗓 {days} {days === 1 ? "день" : "дней"}</div>}
               {search.pickup && <div style={{ fontSize: 13, color: "#666", marginBottom: 4 }}>📍 {search.pickup}</div>}
-              <div style={{ borderTop: "1px solid #d0eeda", marginTop: 14, paddingTop: 14 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 800, fontSize: 18, color: "#2d8a47" }}>
-                  <span>Итого</span><span>${total}</span>
-                </div>
+              <div style={{ borderTop: "1px solid #d0eeda", marginTop: 14, paddingTop: 14, background: "#f0f9f3", borderRadius: 8, padding: 12, textAlign: "center" }}>
+                <div style={{ fontSize: 12, color: "#2d8a47", fontWeight: 700 }}>💬 Пришлём лучшую цену за 30 мин</div>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* BOOKING PAGE */}
+      {/* BOOKING */}
       {page === "booking" && selectedCar && (
         <div style={{ maxWidth: 900, margin: "0 auto", padding: "40px 48px" }}>
           <div className="step-bar">
-            {["Автомобиль", "Доп. услуги", "Ваши данные", "Подтверждение"].map((s, i) => (
+            {["Автомобиль", "Доп. услуги", "Ваши данные", "Готово"].map((s, i) => (
               <div key={s} className={`step ${i === 2 ? "active" : i < 2 ? "done-step" : ""}`}>{i < 2 ? "✓ " : ""}{s}</div>
             ))}
           </div>
@@ -800,35 +754,44 @@ export default function App() {
                 ))}
                 <div style={{ gridColumn: "1/-1" }}>
                   <div style={{ fontSize: 12, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>Примечания</div>
-                  <textarea aria-label="Примечания" placeholder="Любые пожелания..." value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} className="sel" style={{ resize: "vertical", minHeight: 80 }} />
+                  <textarea aria-label="Примечания" placeholder="Любые пожелания, вопросы по цене..." value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} className="sel" style={{ resize: "vertical", minHeight: 80 }} />
                 </div>
               </div>
               <button
-                onClick={() => { const resNo = "LR-" + Date.now().toString().slice(-6); setReservationNo(resNo); sendEmail(selectedCar, search.pickupDate, search.returnDate, days, total, resNo); setDone(true); }}
+                onClick={() => {
+                  const resNo = "LR-" + Date.now().toString().slice(-6);
+                  setReservationNo(resNo);
+                  sendEmail(selectedCar, resNo);
+                  setDone(true);
+                }}
                 style={{ width: "100%", marginTop: 24, padding: 16, fontSize: 16, background: form.name && form.email && form.phone ? "#2d8a47" : "#ccc", color: "#fff", border: "none", borderRadius: 8, fontFamily: "Nunito,sans-serif", fontWeight: 700, cursor: form.name && form.email && form.phone ? "pointer" : "not-allowed" }}>
-                ✅ Подтвердить бронирование
+                📩 Отправить запрос на цену
               </button>
             </div>
             <div className="info-box" style={{ height: "fit-content" }}>
-              <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 14, color: "#1a5c2a" }}>Итог заказа</div>
-              <div style={{ fontWeight: 700 }}>{selectedCar.name}</div>
-              <div style={{ fontSize: 13, color: "#888", marginBottom: 10 }}>{selectedCar.category}</div>
-              {days && <div style={{ fontSize: 13, marginBottom: 4 }}>📅 {days} дней × ${selectedCar.price} = <b>${carPrice}</b></div>}
-              {selectedExtras.map(eid => {
-                const ex = extras.find(e => e.id === eid);
-                return <div key={eid} style={{ fontSize: 13, marginBottom: 4 }}>{ex.icon} {ex.name}: <b>+${ex.price * (days||1)}</b></div>;
-              })}
-              <div style={{ borderTop: "1px solid #d0eeda", marginTop: 14, paddingTop: 14, display: "flex", justifyContent: "space-between", fontWeight: 800, fontSize: 20, color: "#2d8a47" }}>
-                <span>Итого</span><span>${total}</span>
+              <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 14, color: "#1a5c2a" }}>Детали запроса</div>
+              <div style={{ fontWeight: 700, fontSize: 16 }}>{selectedCar.name}</div>
+              <div style={{ fontSize: 13, color: "#888", marginBottom: 8 }}>{selectedCar.category} · {selectedCar.transmission}</div>
+              <div style={{ fontSize: 16, fontWeight: 800, color: "#2d8a47", marginBottom: 12 }}>от ${selectedCar.price}/день</div>
+              {search.pickup && <div style={{ fontSize: 13, marginBottom: 4 }}>📍 {search.pickup}</div>}
+              {search.pickupDate && <div style={{ fontSize: 13, marginBottom: 4 }}>📅 {search.pickupDate} в {search.pickupTime}</div>}
+              {search.returnDate && <div style={{ fontSize: 13, marginBottom: 4 }}>🔄 {search.returnDate} в {search.returnTime}</div>}
+              {days && <div style={{ fontSize: 13, marginBottom: 4 }}>🗓 {days} {days === 1 ? "день" : "дней"}</div>}
+              {selectedExtras.length > 0 && (
+                <div style={{ fontSize: 13, marginBottom: 4 }}>
+                  ➕ {selectedExtras.map(id => extras.find(e => e.id === id)?.name).join(", ")}
+                </div>
+              )}
+              <div style={{ borderTop: "1px solid #d0eeda", marginTop: 14, paddingTop: 14, background: "#f0f9f3", borderRadius: 8, padding: 12, textAlign: "center" }}>
+                <div style={{ fontSize: 12, color: "#2d8a47", fontWeight: 700 }}>💬 Ответим с ценой за 30 минут</div>
               </div>
-              <div style={{ fontSize: 12, color: "#999", marginTop: 10 }}>* Залог оплачивается при получении автомобиля</div>
             </div>
           </div>
         </div>
       )}
 
       {/* WHATSAPP FLOAT */}
-      <a href={`https://wa.me/${WHATSAPP}?text=Здравствуйте! Хочу узнать об аренде.`} target="_blank" rel="noreferrer"
+      <a href={`https://wa.me/${WHATSAPP}?text=Здравствуйте! Хочу узнать цену на аренду авто.`} target="_blank" rel="noreferrer"
         style={{ position: "fixed", bottom: 28, right: 28, zIndex: 9999, width: 58, height: 58, borderRadius: "50%", background: "linear-gradient(135deg,#25d366,#128c7e)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 24px rgba(37,211,102,0.4)", textDecoration: "none" }}>
         <svg viewBox="0 0 24 24" width="30" height="30" fill="white">
           <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
