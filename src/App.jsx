@@ -418,17 +418,71 @@ export default function App() {
           </div>
         </div>
 
-        {/* FOOTER */}
-        <footer style={{ background: "#1a5c2a", color: "#fff", padding: "40px 48px" }}>
-          <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 20 }}>
-            <div>
-              <div style={{ fontFamily: "Montserrat,sans-serif", fontSize: 22, fontWeight: 900, marginBottom: 8 }}>LocalRent</div>
-              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.6)" }}>© 2026 LocalRent Türkiye. Все права защищены.</div>
+       {/* FOOTER */}
+        <footer style={{ background: "#1a5c2a", color: "#fff", padding: "48px 48px 24px" }}>
+          <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+
+            {/* Üst kısım */}
+            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 40, marginBottom: 40 }}>
+              <div>
+                <div style={{ fontFamily: "Montserrat,sans-serif", fontSize: 22, fontWeight: 900, marginBottom: 12 }}>LocalRent</div>
+                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", lineHeight: 1.8, marginBottom: 16 }}>
+                  Аренда автомобилей в Турции.<br />
+                  Поддержка на русском 24/7.<br />
+                  Без скрытых комиссий.
+                </div>
+                <div style={{ display: "flex", gap: 16 }}>
+                  <a href={`tel:${PHONE}`} style={{ color: "#fff", textDecoration: "none", fontSize: 13, fontWeight: 600 }}>📞 {PHONE}</a>
+                </div>
+                <div style={{ marginTop: 8 }}>
+                  <a href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer" style={{ color: "#7fff9a", textDecoration: "none", fontSize: 13, fontWeight: 600 }}>💬 WhatsApp</a>
+                </div>
+                <div style={{ marginTop: 8 }}>
+                  <a href={INSTAGRAM} target="_blank" rel="noreferrer" style={{ color: "#fff", textDecoration: "none", fontSize: 13 }}>📸 Instagram</a>
+                </div>
+              </div>
+
+              <div>
+                <div style={{ fontWeight: 700, marginBottom: 14, fontSize: 14 }}>Навигация</div>
+                {[["Автомобили", "cars"], ["Локации", "locations"], ["Условия", "terms"], ["Бронирование", "reservation"], ["Блог", "blog"], ["ЧаВо", "faq"], ["О нас", "about"], ["Контакты", "contact"]].map(([label, pg]) => (
+                  <div key={pg} style={{ marginBottom: 8 }}>
+                    <span onClick={() => goTo(pg)} style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, cursor: "pointer", textDecoration: "none" }}
+                      onMouseEnter={e => e.target.style.color = "#fff"}
+                      onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.7)"}
+                    >→ {label}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div>
+                <div style={{ fontWeight: 700, marginBottom: 14, fontSize: 14 }}>Города</div>
+                {["Анталья", "Кемер", "Алания", "Бодрум", "Мармарис", "Фетхие", "Измир", "Стамбул"].map(city => (
+                  <div key={city} style={{ marginBottom: 8 }}>
+                    <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, cursor: "pointer" }}
+                      onMouseEnter={e => e.target.style.color = "#fff"}
+                      onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.7)"}
+                    >→ Аренда авто {city}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div>
+                <div style={{ fontWeight: 700, marginBottom: 14, fontSize: 14 }}>Правовая информация</div>
+                {["Политика конфиденциальности", "Политика cookies", "Условия использования", "Защита данных"].map(item => (
+                  <div key={item} style={{ marginBottom: 8 }}>
+                    <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, cursor: "pointer" }}
+                      onMouseEnter={e => e.target.style.color = "#fff"}
+                      onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.7)"}
+                    >→ {item}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
-              <a href={`tel:${PHONE}`} style={{ color: "#fff", textDecoration: "none", fontSize: 14, fontWeight: 600 }}>📞 {PHONE}</a>
-              <a href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer" style={{ color: "#7fff9a", textDecoration: "none", fontSize: 14, fontWeight: 600 }}>💬 WhatsApp</a>
-              <a href={INSTAGRAM} target="_blank" rel="noreferrer" style={{ color: "#fff", textDecoration: "none", fontSize: 14, fontWeight: 600 }}>📸 Instagram</a>
+
+            {/* Alt kısım */}
+            <div style={{ borderTop: "1px solid rgba(255,255,255,0.15)", paddingTop: 20, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>© 2026 LocalRent Türkiye. Все права защищены.</div>
+              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>localrent.com.tr</div>
             </div>
           </div>
         </footer>
