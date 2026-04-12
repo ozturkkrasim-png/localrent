@@ -607,7 +607,6 @@ export default function App() {
           <div style={{ textAlign: "right" }}>
             <div style={{ fontSize: 16, fontWeight: 800, color: "#2d8a47" }}>
   {lang==="ru"?"от ":lang==="tr"?"":"from "}${car.price}{t.perDay}{lang==="tr"?" itibaren":""}
-</div>
         </div>
         <div style={{ display: "flex", gap: 16, fontSize: 13, color: "#666", marginBottom: 14 }}>
           <span>👥 {car.seats} {t.seats}</span>
