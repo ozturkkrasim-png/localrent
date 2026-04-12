@@ -595,7 +595,7 @@ export default function App() {
     </div>
   );
 
-  const CarCard = ({ car }) => (
+ const CarCard = ({ car }) => (
     <div className="car-card" onClick={() => { setSelectedCar(car); goTo("extras"); }}>
       <img src={car.image} alt={`${car.name} — rent a car Antalya`} style={{ width: "100%", height: 180, objectFit: "cover" }} onError={e => e.target.style.display="none"} />
       <div style={{ padding: "16px 20px 20px" }}>
@@ -605,7 +605,10 @@ export default function App() {
             <div style={{ fontFamily: "Montserrat,sans-serif", fontSize: 17, fontWeight: 800 }}>{car.name}</div>
           </div>
           <div style={{ textAlign: "right" }}>
-        <div style={{ fontSize: 16, fontWeight: 800, color: "#2d8a47" }}>{lang==="ru"?"от $":lang==="tr"?"$":"from $"}{car.price}{lang==="tr"?" itibaren":""}{t.perDay}</div>
+            <div style={{ fontSize: 16, fontWeight: 800, color: "#2d8a47" }}>{lang==="ru"?"от $":lang==="tr"?"$":"from $"}{car.price}{lang==="tr"?" itibaren":""}{t.perDay}</div>
+            {days && <div style={{ fontSize: 11, color: "#999" }}>{t.approx}{days} {days === 1 ? t.day : t.days}</div>}
+          </div>
+        </div>
         <div style={{ display: "flex", gap: 16, fontSize: 13, color: "#666", marginBottom: 14 }}>
           <span>👥 {car.seats} {t.seats}</span>
           <span>⚙️ {car.transmission[lang]}</span>
