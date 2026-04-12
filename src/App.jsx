@@ -461,7 +461,7 @@ const blogs = {
 };
 
 const cars = [
-  { id: 1, name: "Renault Clio", category: { ru: "Эконом", tr: "Ekonomi", en: "Economy" }, price: 22, seats: 5, transmission: { ru: "Механика", tr: "Manuel", en: "Manual" }, fuel: { ru: "Бензин", tr: "Benzin", en: "Petrol" }, image: "/cars/cli5.jpg" },
+  { id: 1, name: "Renault Clio", category: { ru: "Эконом", tr: "Ekonomi", en: "Economy" }, price: 22, seats: 5, transmission: { ru: "Механика", tr: "Manuel", en: "Manual" }, fuel: { ru: "Бензин", tr: "Benzin", en: "Petrol" }, image: "/cars/clio5.jpg" },
   { id: 2, name: "Fiat Egea", category: { ru: "Комфорт", tr: "Konfor", en: "Comfort" }, price: 35, seats: 5, transmission: { ru: "Автомат", tr: "Otomatik", en: "Automatic" }, fuel: { ru: "Бензин", tr: "Benzin", en: "Petrol" }, image: "/cars/egea.jpeg" },
   { id: 3, name: "Opel Corsa", category: { ru: "Эконом", tr: "Ekonomi", en: "Economy" }, price: 28, seats: 5, transmission: { ru: "Автомат", tr: "Otomatik", en: "Automatic" }, fuel: { ru: "Бензин", tr: "Benzin", en: "Petrol" }, image: "/cars/opel.jpeg" },
   { id: 4, name: "Dacia Duster", category: { ru: "SUV", tr: "SUV", en: "SUV" }, price: 55, seats: 5, transmission: { ru: "Автомат", tr: "Otomatik", en: "Automatic" }, fuel: { ru: "Дизель", tr: "Dizel", en: "Diesel" }, image: "/cars/duster.jpg" },
