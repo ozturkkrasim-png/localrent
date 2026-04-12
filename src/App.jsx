@@ -110,7 +110,7 @@ export default function App() {
   const setS = (k, v) => setSearch(p => ({ ...p, [k]: v }));
 
   const goTo = (pg) => {
-    window.history.pushState({ page: pg }, "", "#" + pg);
+    window.history.pushState({ page: pg }, "", "/");
     setPage(pg);
   };
 
@@ -120,7 +120,7 @@ export default function App() {
       else setPage("home");
     };
     window.addEventListener("popstate", onPop);
-    window.history.replaceState({ page: "home" }, "", "#home");
+    window.history.replaceState({ page: "home" }, "", "/");
     return () => window.removeEventListener("popstate", onPop);
   }, []);
 
