@@ -462,7 +462,7 @@ const blogs = {
 
 const cars = [
   { id: 11, name: "Citroen C-Elysee", category: { ru: "Эконом Седан", tr: "Ekonomi Sedan", en: "Economy Sedan" }, price: 25, seats: 5, transmission: { ru: "Механика", tr: "Manuel", en: "Manual" }, fuel: { ru: "Бензин", tr: "Benzin", en: "Petrol" }, image: "/cars/celysee.jpg" },
-  { id: 1, name: "Renault Clio", category: { ru: "Эконом", tr: "Ekonomi", en: "Economy" }, price: 30, seats: 5, transmission: { ru: "Автомат", tr: "Otomatik", en: "Automatic" }, fuel: { ru: "Бензин", tr: "Benzin", en: "Petrol" }, image: "/cars/cli5.jpg" },
+  { id: 1, name: "Renault Clio", category: { ru: "Эконом", tr: "Ekonomi", en: "Economy" }, price: 30, seats: 5, transmission: { ru: "Автомат", tr: "Otomatik", en: "Automatic" }, fuel: { ru: "Бензин", tr: "Benzin", en: "Petrol" }, image: "/cars/clio5.jpg" },
   { id: 3, name: "Opel Corsa", category: { ru: "Эконом", tr: "Ekonomi", en: "Economy" }, price: 28, seats: 5, transmission: { ru: "Автомат", tr: "Otomatik", en: "Automatic" }, fuel: { ru: "Бензин", tr: "Benzin", en: "Petrol" }, image: "/cars/opel.jpeg" },
   { id: 2, name: "Fiat Egea", category: { ru: "Комфорт", tr: "Konfor", en: "Comfort" }, price: 35, seats: 5, transmission: { ru: "Автомат", tr: "Otomatik", en: "Automatic" }, fuel: { ru: "Бензин", tr: "Benzin", en: "Petrol" }, image: "/cars/egea.jpeg" },
   { id: 12, name: "Toyota Corolla", category: { ru: "Комфорт Седан", tr: "Konfor Sedan", en: "Comfort Sedan" }, price: 40, seats: 5, transmission: { ru: "Автомат", tr: "Otomatik", en: "Automatic" }, fuel: { ru: "Бензин", tr: "Benzin", en: "Petrol" }, image: "/cars/corolla.jpg" },
