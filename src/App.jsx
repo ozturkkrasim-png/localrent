@@ -467,6 +467,11 @@ const cars = [
   { id: 4, name: "Dacia Duster", category: { ru: "SUV", tr: "SUV", en: "SUV" }, price: 55, seats: 5, transmission: { ru: "Автомат", tr: "Otomatik", en: "Automatic" }, fuel: { ru: "Дизель", tr: "Dizel", en: "Diesel" }, image: "/cars/duster.jpg" },
   { id: 5, name: "Citroen SpaceTourer", category: { ru: "Минивэн", tr: "Minivan", en: "Minivan" }, price: 75, seats: 8, transmission: { ru: "Автомат", tr: "Otomatik", en: "Automatic" }, fuel: { ru: "Дизель", tr: "Dizel", en: "Diesel" }, image: "/cars/minivan.jpg" },
   { id: 6, name: "Citroen C4X", category: { ru: "SUV", tr: "SUV", en: "SUV" }, price: 65, seats: 5, transmission: { ru: "Автомат", tr: "Otomatik", en: "Automatic" }, fuel: { ru: "Бензин", tr: "Benzin", en: "Petrol" }, image: "/cars/citroenc4x.jpg" },
+  { id: 7, name: "Opel Grandland", category: { ru: "SUV", tr: "SUV", en: "SUV" }, price: 70, seats: 5, transmission: { ru: "Автомат", tr: "Otomatik", en: "Automatic" }, fuel: { ru: "Бензин", tr: "Benzin", en: "Petrol" }, image: "/cars/grandland.jpg" },
+{ id: 8, name: "BYD Seal U", category: { ru: "SUV", tr: "SUV", en: "SUV" }, price: 75, seats: 5, transmission: { ru: "Автомат", tr: "Otomatik", en: "Automatic" }, fuel: { ru: "Электро", tr: "Elektrik", en: "Electric" }, image: "/cars/bydseal.jpg" },
+{ id: 9, name: "Skoda Superb", category: { ru: "Премиум", tr: "Premium", en: "Premium" }, price: 85, seats: 5, transmission: { ru: "Автомат", tr: "Otomatik", en: "Automatic" }, fuel: { ru: "Бензин", tr: "Benzin", en: "Petrol" }, image: "/cars/superb.jpg" },
+{ id: 10, name: "Peugeot 2008", category: { ru: "SUV", tr: "SUV", en: "SUV" }, price: 58, seats: 5, transmission: { ru: "Автомат", tr: "Otomatik", en: "Automatic" }, fuel: { ru: "Бензин", tr: "Benzin", en: "Petrol" }, image: "/cars/peugeot2008.jpg" },
+{ id: 11, name: "Citroen C-Elysee", category: { ru: "Эконом Седан", tr: "Ekonomi Sedan", en: "Economy Sedan" }, price: 25, seats: 5, transmission: { ru: "Механика", tr: "Manuel", en: "Manual" }, fuel: { ru: "Бензин", tr: "Benzin", en: "Petrol" }, image: "/cars/celysee.jpg" },
 ];
 
 const extras = {
