@@ -109,8 +109,9 @@ export default function App() {
 
   const setS = (k, v) => setSearch(p => ({ ...p, [k]: v }));
 
-  const goTo = (pg) => {
-    window.history.pushState({ page: pg }, "", "/");
+const goTo = (pg) => {
+    const url = pg === "home" ? "/" : "/" + pg;
+    window.history.pushState({ page: pg }, "", url);
     setPage(pg);
   };
 
