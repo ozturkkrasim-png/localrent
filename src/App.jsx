@@ -801,7 +801,7 @@ export default function App() {
               <button className="outline-btn" onClick={() => goTo("cars")}>{t.carsAll}</button>
             </div>
             <div className="cars-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
-              {cars.slice(0,3).map(car => <CarCard key={car.id} car={car} />)}
+              {cars.filter(car => [8,7,9].includes(car.id)).map(car => <CarCard key={car.id} car={car} />)}
             </div>
           </div>
         </div>
