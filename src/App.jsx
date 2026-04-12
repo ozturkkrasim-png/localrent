@@ -472,6 +472,7 @@ const cars = [
 { id: 9, name: "Skoda Superb", category: { ru: "Премиум", tr: "Premium", en: "Premium" }, price: 85, seats: 5, transmission: { ru: "Автомат", tr: "Otomatik", en: "Automatic" }, fuel: { ru: "Бензин", tr: "Benzin", en: "Petrol" }, image: "/cars/superb.jpg" },
 { id: 10, name: "Peugeot 2008", category: { ru: "SUV", tr: "SUV", en: "SUV" }, price: 58, seats: 5, transmission: { ru: "Автомат", tr: "Otomatik", en: "Automatic" }, fuel: { ru: "Бензин", tr: "Benzin", en: "Petrol" }, image: "/cars/peugeot2008.jpg" },
 { id: 11, name: "Citroen C-Elysee", category: { ru: "Эконом Седан", tr: "Ekonomi Sedan", en: "Economy Sedan" }, price: 25, seats: 5, transmission: { ru: "Механика", tr: "Manuel", en: "Manual" }, fuel: { ru: "Бензин", tr: "Benzin", en: "Petrol" }, image: "/cars/celysee.jpg" },
+  { id: 12, name: "Toyota Corolla", category: { ru: "Комфорт Седан", tr: "Konfor Sedan", en: "Comfort Sedan" }, price: 40, seats: 5, transmission: { ru: "Автомат", tr: "Otomatik", en: "Automatic" }, fuel: { ru: "Бензин", tr: "Benzin", en: "Petrol" }, image: "/cars/corolla.jpg" },
 ];
 
 const extras = {
