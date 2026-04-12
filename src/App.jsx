@@ -182,7 +182,7 @@ const goTo = (pg) => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #fff; }
+        body { background: #fff; overflow-x: hidden; }
         .sel { width: 100%; padding: 11px 14px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 14px; font-family: Nunito,sans-serif; outline: none; background: #fff; color: #222; transition: border .2s; }
         .sel:focus { border-color: #2d8a47; }
         .green-btn { background: #2d8a47; color: #fff; border: none; border-radius: 8px; padding: 13px 28px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: Nunito,sans-serif; transition: background .2s; }
