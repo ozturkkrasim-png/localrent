@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LocalRent Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: #2a2a3a;
+    --accent: #ff6b35;
+    --accent2: #ffd166;
+    --text: #f0f0f8;
+    --muted: #6b6b8a;
+    --success: #06d6a0;
+    --danger: #ef233c;
+    --warning: #ffd166;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* LOGIN */
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at 30% 50%, #1a0a2e 0%, var(--bg) 60%);
+  }
+
+  .login-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 48px;
+    width: 380px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+  }
+
+  .login-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .login-sub {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 36px;
+  }
+
+  .login-box input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    margin-bottom: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .login-box input:focus { border-color: var(--accent); }
+
+  .login-box button {
+    width: 100%;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    color: white;
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+
+  .login-box button:hover { opacity: 0.9; transform: translateY(-1px); }
+  .login-error { color: var(--danger); font-size: 13px; margin-top: 8px; display: none; }
+
+  /* MAIN LAYOUT */
+  #app { display: none; }
+
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 240px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    z-index: 100;
+  }
+
+  .sidebar-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--accent);
+    padding: 0 24px 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .sidebar-logo span { color: var(--muted); font-size: 12px; display: block; font-family: 'DM Sans', sans-serif; font-weight: 400; margin-top: 2px; }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: background 0.15s;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    border-left: 3px solid transparent;
+  }
+
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { background: var(--surface2); color: var(--accent); border-left-color: var(--accent); }
+  .nav-item .icon { font-size: 18px; width: 24px; text-align: center; }
+
+  .sidebar-bottom {
+    position: absolute;
+    bottom: 24px;
+    left: 0; right: 0;
+    padding: 0 24px;
+  }
+
+  .logout-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+
+  .logout-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* MAIN CONTENT */
+  .main {
+    margin-left: 240px;
+    padding: 32px;
+    min-height: 100vh;
+  }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+  }
+
+  .page-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+  }
+
+  /* STAT CARDS */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .stat-card.orange::before { background: var(--accent); }
+  .stat-card.yellow::before { background: var(--accent2); }
+  .stat-card.green::before { background: var(--success); }
+  .stat-card.red::before { background: var(--danger); }
+
+  .stat-label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .stat-value { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; }
+  .stat-icon { position: absolute; right: 20px; top: 20px; font-size: 28px; opacity: 0.3; }
+
+  /* TABLE */
+  .table-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .table-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .table-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  th {
+    padding: 12px 24px;
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    background: var(--surface2);
+    font-weight: 600;
+  }
+
+  td {
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,107,53,0.04); }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .badge-green { background: rgba(6,214,160,0.15); color: var(--success); }
+  .badge-red { background: rgba(239,35,60,0.15); color: var(--danger); }
+  .badge-yellow { background: rgba(255,209,102,0.15); color: var(--warning); }
+  .badge-blue { background: rgba(100,149,237,0.15); color: cornflowerblue; }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger { background: rgba(239,35,60,0.15); color: var(--danger); border: 1px solid rgba(239,35,60,0.3); }
+  .btn-danger:hover { background: rgba(239,35,60,0.25); }
+  .btn-sm { padding: 5px 12px; font-size: 12px; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    width: 480px;
+    max-width: 90vw;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+  }
+
+  .modal-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 24px;
+  }
+
+  .form-group { margin-bottom: 16px; }
+  .form-label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+
+  .form-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-input:focus { border-color: var(--accent); }
+
+  select.form-input option { background: var(--surface2); }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-size: 14px;
+    z-index: 9999;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s;
+    max-width: 320px;
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { border-color: var(--success); color: var(--success); }
+  .toast.error { border-color: var(--danger); color: var(--danger); }
+
+  /* LOADING */
+  .loading { color: var(--muted); text-align: center; padding: 32px; font-size: 14px; }
+
+  /* SEARCH */
+  .search-input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    width: 240px;
+    transition: border-color 0.2s;
+  }
+
+  .search-input:focus { border-color: var(--accent); }
+
+  .table-actions { display: flex; gap: 8px; }
+
+  /* DASHBOARD RECENT */
+  .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  /* EMPTY STATE */
+  .empty-state { text-align: center; padding: 48px; color: var(--muted); }
+  .empty-state .empty-icon { font-size: 48px; margin-bottom: 16px; }
+
+  /* VISITS CHART */
+  .visit-bar-container { padding: 20px 24px; }
+  .visit-day { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .visit-day-label { width: 80px; font-size: 12px; color: var(--muted); }
+  .visit-bar-wrap { flex: 1; background: var(--surface2); border-radius: 4px; height: 24px; overflow: hidden; }
+  .visit-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; color: white; font-weight: 600; transition: width 0.5s ease; min-width: 30px; }
+
+  @media (max-width: 900px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .dashboard-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">🚗 LocalRent</div>
+    <div class="login-sub">Admin Paneli — Yetkili Giriş</div>
+    <input type="text" id="admin-user" placeholder="Kullanıcı adı" autocomplete="off">
+    <input type="password" id="admin-pass" placeholder="Şifre">
+    <button onclick="doLogin()">Giriş Yap</button>
+    <div class="login-error" id="login-error">Hatalı kullanıcı adı veya şifre!</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo">🚗 LocalRent <span>Admin Paneli</span></div>
+    <div class="nav-item active" onclick="showPage('dashboard')"><span class="icon">📊</span> Genel Bakış</div>
+    <div class="nav-item" onclick="showPage('araclar')"><span class="icon">🚙</span> Araçlar</div>
+    <div class="nav-item" onclick="showPage('rezervasyonlar')"><span class="icon">📅</span> Rezervasyonlar</div>
+    <div class="nav-item" onclick="showPage('musteriler')"><span class="icon">👥</span> Müşteriler</div>
+    <div class="nav-item" onclick="showPage('ziyaretler')"><span class="icon">📈</span> Ziyaretler</div>
+    <div class="sidebar-bottom">
+      <button class="logout-btn" onclick="doLogout()">🚪 Çıkış Yap</button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <div class="page-title">Genel Bakış</div>
+        <div style="color: var(--muted); font-size: 13px;" id="dashboard-date"></div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card orange">
+          <div class="stat-label">Toplam Araç</div>
+          <div class="stat-value" id="stat-araclar">—</div>
+          <div class="stat-icon">🚙</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Aktif Rezervasyon</div>
+          <div class="stat-value" id="stat-rezervasyonlar">—</div>
+          <div class="stat-icon">📅</div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-label">Toplam Müşteri</div>
+          <div class="stat-value" id="stat-musteriler">—</div>
+          <div class="stat-icon">👥</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Bugün Ziyaret</div>
+          <div class="stat-value" id="stat-ziyaretler">—</div>
+          <div class="stat-icon">📈</div>
+        </div>
+      </div>
+      <div class="dashboard-grid">
+        <div class="table-container">
+          <div class="table-header"><div class="table-title">Son Rezervasyonlar</div></div>
+          <div id="son-rezervasyonlar"><div class="loading">Yükleniyor...</div></div>
+        </div>
+        <div class="table-container">
+          <div class="table-header"><div class="table-title">Müsait Araçlar</div></div>
+          <div id="musait-araclar"><div class="loading">Yükleniyor...</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARAÇLAR -->
+    <div class="page" id="page-araclar">
+      <div class="page-header">
+        <div class="page-title">Araç Yönetimi</div>
+        <button class="btn btn-primary" onclick="openAracModal()">+ Araç Ekle</button>
+      </div>
+      <div class="table-container">
+        <div class="table-header">
+          <div class="table-title">Tüm Araçlar</div>
+          <input class="search-input" placeholder="🔍 Ara..." oninput="filterAraclar(this.value)">
+        </div>
+        <div id="araclar-table"><div class="loading">Yükleniyor...</div></div>
+      </div>
+    </div>
+
+    <!-- REZERVASYONLAR -->
+    <div class="page" id="page-rezervasyonlar">
+      <div class="page-header">
+        <div class="page-title">Rezervasyonlar</div>
+        <button class="btn btn-primary" onclick="openRezModal()">+ Rezervasyon Ekle</button>
+      </div>
+      <div class="table-container">
+        <div class="table-header">
+          <div class="table-title">Tüm Rezervasyonlar</div>
+          <select class="search-input" style="width:180px" onchange="filterRez(this.value)">
+            <option value="">Tümü</option>
+            <option value="beklemede">Beklemede</option>
+            <option value="onaylandi">Onaylandı</option>
+            <option value="tamamlandi">Tamamlandı</option>
+            <option value="iptal">İptal</option>
+          </select>
+        </div>
+        <div id="rezervasyonlar-table"><div class="loading">Yükleniyor...</div></div>
+      </div>
+    </div>
+
+    <!-- MÜŞTERİLER -->
+    <div class="page" id="page-musteriler">
+      <div class="page-header">
+        <div class="page-title">Müşteri Yönetimi</div>
+        <button class="btn btn-primary" onclick="openMusteriModal()">+ Müşteri Ekle</button>
+      </div>
+      <div class="table-container">
+        <div class="table-header">
+          <div class="table-title">Tüm Müşteriler</div>
+          <input class="search-input" placeholder="🔍 Ad, telefon, email..." oninput="filterMusteriler(this.value)">
+        </div>
+        <div id="musteriler-table"><div class="loading">Yükleniyor...</div></div>
+      </div>
+    </div>
+
+    <!-- ZİYARETLER -->
+    <div class="page" id="page-ziyaretler">
+      <div class="page-header">
+        <div class="page-title">Sayfa Ziyaretleri</div>
+      </div>
+      <div class="stats-grid" style="grid-template-columns: repeat(3,1fr)">
+        <div class="stat-card orange">
+          <div class="stat-label">Bugün</div>
+          <div class="stat-value" id="viz-bugun">—</div>
+          <div class="stat-icon">📅</div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-label">Bu Hafta</div>
+          <div class="stat-value" id="viz-hafta">—</div>
+          <div class="stat-icon">📆</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Toplam</div>
+          <div class="stat-value" id="viz-toplam">—</div>
+          <div class="stat-icon">📊</div>
+        </div>
+      </div>
+      <div class="table-container">
+        <div class="table-header"><div class="table-title">Son 7 Gün — Günlük Ziyaret</div></div>
+        <div class="visit-bar-container" id="visit-bars"><div class="loading">Yükleniyor...</div></div>
+      </div>
+      <div class="table-container" style="margin-top:20px">
+        <div class="table-header"><div class="table-title">Son Ziyaretler</div></div>
+        <div id="ziyaretler-table"><div class="loading">Yükleniyor...</div></div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ARAÇ MODAL -->
+<div class="modal-overlay" id="arac-modal">
+  <div class="modal">
+    <div class="modal-title" id="arac-modal-title">Araç Ekle</div>
+    <input type="hidden" id="arac-edit-id">
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Marka *</label>
+        <input class="form-input" id="arac-marka" placeholder="Toyota">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Model *</label>
+        <input class="form-input" id="arac-model" placeholder="Corolla">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Yıl</label>
+        <input class="form-input" id="arac-yil" type="number" placeholder="2023">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Plaka</label>
+        <input class="form-input" id="arac-plaka" placeholder="07 ABC 123">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Günlük Fiyat (₺)</label>
+        <input class="form-input" id="arac-fiyat" type="number" placeholder="500">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Durum</label>
+        <select class="form-input" id="arac-musait">
+          <option value="true">Müsait</option>
+          <option value="false">Müsait Değil</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Resim URL</label>
+      <input class="form-input" id="arac-resim" placeholder="https://...">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('arac-modal')">İptal</button>
+      <button class="btn btn-primary" onclick="saveArac()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<!-- REZERVASYON MODAL -->
+<div class="modal-overlay" id="rez-modal">
+  <div class="modal">
+    <div class="modal-title" id="rez-modal-title">Rezervasyon Ekle</div>
+    <input type="hidden" id="rez-edit-id">
+    <div class="form-group">
+      <label class="form-label">Müşteri *</label>
+      <select class="form-input" id="rez-musteri"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Araç *</label>
+      <select class="form-input" id="rez-arac"></select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Başlangıç Tarihi</label>
+        <input class="form-input" id="rez-baslangic" type="date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Bitiş Tarihi</label>
+        <input class="form-input" id="rez-bitis" type="date">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Toplam Fiyat (₺)</label>
+        <input class="form-input" id="rez-fiyat" type="number" placeholder="1500">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Durum</label>
+        <select class="form-input" id="rez-durum">
+          <option value="beklemede">Beklemede</option>
+          <option value="onaylandi">Onaylandı</option>
+          <option value="tamamlandi">Tamamlandı</option>
+          <option value="iptal">İptal</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('rez-modal')">İptal</button>
+      <button class="btn btn-primary" onclick="saveRez()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<!-- MÜŞTERİ MODAL -->
+<div class="modal-overlay" id="musteri-modal">
+  <div class="modal">
+    <div class="modal-title" id="musteri-modal-title">Müşteri Ekle</div>
+    <input type="hidden" id="musteri-edit-id">
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Ad Soyad *</label>
+        <input class="form-input" id="musteri-ad" placeholder="Ahmet Yılmaz">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Telefon</label>
+        <input class="form-input" id="musteri-tel" placeholder="0532...">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="musteri-email" placeholder="ahmet@...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">TC Kimlik</label>
+        <input class="form-input" id="musteri-tc" placeholder="12345678901">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('musteri-modal')">İptal</button>
+      <button class="btn btn-primary" onclick="saveMusteri()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────
+const SUPABASE_URL = 'https://gpublxoarsxpigfodeoe.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdwdWJseG9hcnN4cGlnZm9kZW9lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyNzk2OTgsImV4cCI6MjA5MTg1NTY5OH0.6MLIUon4WEozJtU9eLzbCdy6zl_zqLuQl9RclhR8f-A';
+const ADMIN_USER = 'admin';
+const ADMIN_PASS = 'localrent2024';
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ── LOGIN ────────────────────────────────────────────────
+function doLogin() {
+  const u = document.getElementById('admin-user').value;
+  const p = document.getElementById('admin-pass').value;
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    sessionStorage.setItem('lr_admin', '1');
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    initApp();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') doLogin();
+});
+
+function doLogout() {
+  sessionStorage.removeItem('lr_admin');
+  location.reload();
+}
+
+// ── INIT ─────────────────────────────────────────────────
+function initApp() {
+  document.getElementById('dashboard-date').textContent = new Date().toLocaleDateString('tr-TR', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+  loadDashboard();
+  trackVisit();
+}
+
+if (sessionStorage.getItem('lr_admin')) {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  initApp();
+}
+
+// ── NAVIGATION ───────────────────────────────────────────
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (name === 'araclar') loadAraclar();
+  if (name === 'rezervasyonlar') loadRezervasyonlar();
+  if (name === 'musteriler') loadMusteriler();
+  if (name === 'ziyaretler') loadZiyaretler();
+}
+
+// ── TOAST ────────────────────────────────────────────────
+function toast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type + ' show';
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── MODAL ────────────────────────────────────────────────
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+
+// ── TRACK VISIT ──────────────────────────────────────────
+async function trackVisit() {
+  await sb.from('ziyaretler').insert({ sayfa: window.location.pathname || '/admin' });
+}
+
+// ── DASHBOARD ────────────────────────────────────────────
+async function loadDashboard() {
+  const [{ count: ac }, { count: rc }, { count: mc }] = await Promise.all([
+    sb.from('araclar').select('*', { count: 'exact', head: true }),
+    sb.from('rezervasyonlar').select('*', { count: 'exact', head: true }).in('durum', ['beklemede','onaylandi']),
+    sb.from('musteriler').select('*', { count: 'exact', head: true }),
+  ]);
+
+  const today = new Date().toISOString().split('T')[0];
+  const { count: vc } = await sb.from('ziyaretler').select('*', { count: 'exact', head: true })
+    .gte('ziyaret_tarihi', today + 'T00:00:00');
+
+  document.getElementById('stat-araclar').textContent = ac ?? 0;
+  document.getElementById('stat-rezervasyonlar').textContent = rc ?? 0;
+  document.getElementById('stat-musteriler').textContent = mc ?? 0;
+  document.getElementById('stat-ziyaretler').textContent = vc ?? 0;
+
+  // Son rezervasyonlar
+  const { data: rezData } = await sb.from('rezervasyonlar').select('*, musteriler(ad_soyad), araclar(marka,model)').order('created_at', { ascending: false }).limit(5);
+  const sonRezEl = document.getElementById('son-rezervasyonlar');
+  if (!rezData || rezData.length === 0) {
+    sonRezEl.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div>Henüz rezervasyon yok</div>';
+  } else {
+    sonRezEl.innerHTML = '<table><thead><tr><th>Müşteri</th><th>Araç</th><th>Durum</th></tr></thead><tbody>' +
+      rezData.map(r => `<tr><td>${r.musteriler?.ad_soyad || '—'}</td><td>${r.araclar ? r.araclar.marka + ' ' + r.araclar.model : '—'}</td><td>${durumBadge(r.durum)}</td></tr>`).join('') +
+      '</tbody></table>';
+  }
+
+  // Müsait araçlar
+  const { data: aracData } = await sb.from('araclar').select('*').eq('musait', true).limit(5);
+  const musaitEl = document.getElementById('musait-araclar');
+  if (!aracData || aracData.length === 0) {
+    musaitEl.innerHTML = '<div class="empty-state"><div class="empty-icon">🚙</div>Müsait araç yok</div>';
+  } else {
+    musaitEl.innerHTML = '<table><thead><tr><th>Araç</th><th>Yıl</th><th>Fiyat/Gün</th></tr></thead><tbody>' +
+      aracData.map(a => `<tr><td>${a.marka} ${a.model}</td><td>${a.yil || '—'}</td><td>${a.gunluk_fiyat ? '₺' + a.gunluk_fiyat : '—'}</td></tr>`).join('') +
+      '</tbody></table>';
+  }
+}
+
+function durumBadge(d) {
+  const map = { beklemede: 'yellow', onaylandi: 'green', tamamlandi: 'blue', iptal: 'red' };
+  const label = { beklemede: 'Beklemede', onaylandi: 'Onaylandı', tamamlandi: 'Tamamlandı', iptal: 'İptal' };
+  return `<span class="badge badge-${map[d] || 'yellow'}">${label[d] || d}</span>`;
+}
+
+// ── ARAÇLAR ──────────────────────────────────────────────
+let allAraclar = [];
+
+async function loadAraclar() {
+  const { data } = await sb.from('araclar').select('*').order('created_at', { ascending: false });
+  allAraclar = data || [];
+  renderAraclar(allAraclar);
+}
+
+function renderAraclar(list) {
+  const el = document.getElementById('araclar-table');
+  if (!list.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🚙</div>Araç bulunamadı</div>'; return; }
+  el.innerHTML = '<table><thead><tr><th>Marka / Model</th><th>Yıl</th><th>Plaka</th><th>Fiyat/Gün</th><th>Durum</th><th>İşlem</th></tr></thead><tbody>' +
+    list.map(a => `<tr>
+      <td><strong>${a.marka}</strong> ${a.model}</td>
+      <td>${a.yil || '—'}</td>
+      <td>${a.plaka || '—'}</td>
+      <td>${a.gunluk_fiyat ? '₺' + Number(a.gunluk_fiyat).toLocaleString('tr-TR') : '—'}</td>
+      <td><span class="badge ${a.musait ? 'badge-green' : 'badge-red'}">${a.musait ? 'Müsait' : 'Müsait Değil'}</span></td>
+      <td class="table-actions">
+        <button class="btn btn-ghost btn-sm" onclick="editArac('${a.id}')">✏️ Düzenle</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteArac('${a.id}')">🗑️</button>
+      </td>
+    </tr>`).join('') +
+    '</tbody></table>';
+}
+
+function filterAraclar(q) {
+  const f = allAraclar.filter(a => (a.marka + ' ' + a.model + ' ' + a.plaka).toLowerCase().includes(q.toLowerCase()));
+  renderAraclar(f);
+}
+
+function openAracModal(reset = true) {
+  if (reset) {
+    document.getElementById('arac-modal-title').textContent = 'Araç Ekle';
+    document.getElementById('arac-edit-id').value = '';
+    ['arac-marka','arac-model','arac-yil','arac-plaka','arac-fiyat','arac-resim'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('arac-musait').value = 'true';
+  }
+  openModal('arac-modal');
+}
+
+function editArac(id) {
+  const a = allAraclar.find(x => x.id === id);
+  if (!a) return;
+  document.getElementById('arac-modal-title').textContent = 'Araç Düzenle';
+  document.getElementById('arac-edit-id').value = id;
+  document.getElementById('arac-marka').value = a.marka || '';
+  document.getElementById('arac-model').value = a.model || '';
+  document.getElementById('arac-yil').value = a.yil || '';
+  document.getElementById('arac-plaka').value = a.plaka || '';
+  document.getElementById('arac-fiyat').value = a.gunluk_fiyat || '';
+  document.getElementById('arac-musait').value = String(a.musait);
+  document.getElementById('arac-resim').value = a.resim_url || '';
+  openAracModal(false);
+}
+
+async function saveArac() {
+  const id = document.getElementById('arac-edit-id').value;
+  const data = {
+    marka: document.getElementById('arac-marka').value.trim(),
+    model: document.getElementById('arac-model').value.trim(),
+    yil: parseInt(document.getElementById('arac-yil').value) || null,
+    plaka: document.getElementById('arac-plaka').value.trim() || null,
+    gunluk_fiyat: parseFloat(document.getElementById('arac-fiyat').value) || null,
+    musait: document.getElementById('arac-musait').value === 'true',
+    resim_url: document.getElementById('arac-resim').value.trim() || null,
+  };
+  if (!data.marka || !data.model) { toast('Marka ve model zorunlu!', 'error'); return; }
+  let err;
+  if (id) {
+    ({ error: err } = await sb.from('araclar').update(data).eq('id', id));
+  } else {
+    ({ error: err } = await sb.from('araclar').insert(data));
+  }
+  if (err) { toast('Hata: ' + err.message, 'error'); return; }
+  toast(id ? 'Araç güncellendi ✓' : 'Araç eklendi ✓');
+  closeModal('arac-modal');
+  loadAraclar();
+}
+
+async function deleteArac(id) {
+  if (!confirm('Bu aracı silmek istediğinizden emin misiniz?')) return;
+  const { error } = await sb.from('araclar').delete().eq('id', id);
+  if (error) { toast('Hata: ' + error.message, 'error'); return; }
+  toast('Araç silindi');
+  loadAraclar();
+}
+
+// ── REZERVASYONLAR ───────────────────────────────────────
+let allRez = [];
+
+async function loadRezervasyonlar() {
+  const { data } = await sb.from('rezervasyonlar').select('*, musteriler(ad_soyad), araclar(marka,model)').order('created_at', { ascending: false });
+  allRez = data || [];
+  renderRez(allRez);
+  await loadMusteriSelectOptions();
+  await loadAracSelectOptions();
+}
+
+function renderRez(list) {
+  const el = document.getElementById('rezervasyonlar-table');
+  if (!list.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div>Rezervasyon bulunamadı</div>'; return; }
+  el.innerHTML = '<table><thead><tr><th>Müşteri</th><th>Araç</th><th>Başlangıç</th><th>Bitiş</th><th>Fiyat</th><th>Durum</th><th>İşlem</th></tr></thead><tbody>' +
+    list.map(r => `<tr>
+      <td>${r.musteriler?.ad_soyad || '—'}</td>
+      <td>${r.araclar ? r.araclar.marka + ' ' + r.araclar.model : '—'}</td>
+      <td>${r.baslangic_tarihi || '—'}</td>
+      <td>${r.bitis_tarihi || '—'}</td>
+      <td>${r.toplam_fiyat ? '₺' + Number(r.toplam_fiyat).toLocaleString('tr-TR') : '—'}</td>
+      <td>${durumBadge(r.durum)}</td>
+      <td class="table-actions">
+        <button class="btn btn-ghost btn-sm" onclick="editRez('${r.id}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteRez('${r.id}')">🗑️</button>
+      </td>
+    </tr>`).join('') +
+    '</tbody></table>';
+}
+
+function filterRez(durum) {
+  const f = durum ? allRez.filter(r => r.durum === durum) : allRez;
+  renderRez(f);
+}
+
+async function loadMusteriSelectOptions() {
+  const { data } = await sb.from('musteriler').select('id, ad_soyad').order('ad_soyad');
+  const sel = document.getElementById('rez-musteri');
+  sel.innerHTML = '<option value="">— Müşteri Seçin —</option>' + (data || []).map(m => `<option value="${m.id}">${m.ad_soyad}</option>`).join('');
+}
+
+async function loadAracSelectOptions() {
+  const { data } = await sb.from('araclar').select('id, marka, model, plaka').order('marka');
+  const sel = document.getElementById('rez-arac');
+  sel.innerHTML = '<option value="">— Araç Seçin —</option>' + (data || []).map(a => `<option value="${a.id}">${a.marka} ${a.model}${a.plaka ? ' (' + a.plaka + ')' : ''}</option>`).join('');
+}
+
+function openRezModal() {
+  document.getElementById('rez-modal-title').textContent = 'Rezervasyon Ekle';
+  document.getElementById('rez-edit-id').value = '';
+  document.getElementById('rez-musteri').value = '';
+  document.getElementById('rez-arac').value = '';
+  document.getElementById('rez-baslangic').value = '';
+  document.getElementById('rez-bitis').value = '';
+  document.getElementById('rez-fiyat').value = '';
+  document.getElementById('rez-durum').value = 'beklemede';
+  openModal('rez-modal');
+}
+
+function editRez(id) {
+  const r = allRez.find(x => x.id === id);
+  if (!r) return;
+  document.getElementById('rez-modal-title').textContent = 'Rezervasyon Düzenle';
+  document.getElementById('rez-edit-id').value = id;
+  document.getElementById('rez-musteri').value = r.musteri_id || '';
+  document.getElementById('rez-arac').value = r.arac_id || '';
+  document.getElementById('rez-baslangic').value = r.baslangic_tarihi || '';
+  document.getElementById('rez-bitis').value = r.bitis_tarihi || '';
+  document.getElementById('rez-fiyat').value = r.toplam_fiyat || '';
+  document.getElementById('rez-durum').value = r.durum || 'beklemede';
+  openModal('rez-modal');
+}
+
+async function saveRez() {
+  const id = document.getElementById('rez-edit-id').value;
+  const data = {
+    musteri_id: document.getElementById('rez-musteri').value || null,
+    arac_id: document.getElementById('rez-arac').value || null,
+    baslangic_tarihi: document.getElementById('rez-baslangic').value,
+    bitis_tarihi: document.getElementById('rez-bitis').value,
+    toplam_fiyat: parseFloat(document.getElementById('rez-fiyat').value) || null,
+    durum: document.getElementById('rez-durum').value,
+  };
+  if (!data.baslangic_tarihi || !data.bitis_tarihi) { toast('Tarihler zorunlu!', 'error'); return; }
+  let err;
+  if (id) {
+    ({ error: err } = await sb.from('rezervasyonlar').update(data).eq('id', id));
+  } else {
+    ({ error: err } = await sb.from('rezervasyonlar').insert(data));
+  }
+  if (err) { toast('Hata: ' + err.message, 'error'); return; }
+  toast(id ? 'Rezervasyon güncellendi ✓' : 'Rezervasyon eklendi ✓');
+  closeModal('rez-modal');
+  loadRezervasyonlar();
+}
+
+async function deleteRez(id) {
+  if (!confirm('Bu rezervasyonu silmek istediğinizden emin misiniz?')) return;
+  const { error } = await sb.from('rezervasyonlar').delete().eq('id', id);
+  if (error) { toast('Hata: ' + error.message, 'error'); return; }
+  toast('Rezervasyon silindi');
+  loadRezervasyonlar();
+}
+
+// ── MÜŞTERİLER ───────────────────────────────────────────
+let allMusteriler = [];
+
+async function loadMusteriler() {
+  const { data } = await sb.from('musteriler').select('*').order('created_at', { ascending: false });
+  allMusteriler = data || [];
+  renderMusteriler(allMusteriler);
+}
+
+function renderMusteriler(list) {
+  const el = document.getElementById('musteriler-table');
+  if (!list.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div>Müşteri bulunamadı</div>'; return; }
+  el.innerHTML = '<table><thead><tr><th>Ad Soyad</th><th>Telefon</th><th>Email</th><th>TC Kimlik</th><th>Kayıt Tarihi</th><th>İşlem</th></tr></thead><tbody>' +
+    list.map(m => `<tr>
+      <td><strong>${m.ad_soyad}</strong></td>
+      <td>${m.telefon || '—'}</td>
+      <td>${m.email || '—'}</td>
+      <td>${m.tc_kimlik ? '••••••' + m.tc_kimlik.slice(-5) : '—'}</td>
+      <td>${new Date(m.created_at).toLocaleDateString('tr-TR')}</td>
+      <td class="table-actions">
+        <button class="btn btn-ghost btn-sm" onclick="editMusteri('${m.id}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteMusteri('${m.id}')">🗑️</button>
+      </td>
+    </tr>`).join('') +
+    '</tbody></table>';
+}
+
+function filterMusteriler(q) {
+  const f = allMusteriler.filter(m => (m.ad_soyad + ' ' + m.telefon + ' ' + m.email).toLowerCase().includes(q.toLowerCase()));
+  renderMusteriler(f);
+}
+
+function openMusteriModal() {
+  document.getElementById('musteri-modal-title').textContent = 'Müşteri Ekle';
+  document.getElementById('musteri-edit-id').value = '';
+  ['musteri-ad','musteri-tel','musteri-email','musteri-tc'].forEach(id => document.getElementById(id).value = '');
+  openModal('musteri-modal');
+}
+
+function editMusteri(id) {
+  const m = allMusteriler.find(x => x.id === id);
+  if (!m) return;
+  document.getElementById('musteri-modal-title').textContent = 'Müşteri Düzenle';
+  document.getElementById('musteri-edit-id').value = id;
+  document.getElementById('musteri-ad').value = m.ad_soyad || '';
+  document.getElementById('musteri-tel').value = m.telefon || '';
+  document.getElementById('musteri-email').value = m.email || '';
+  document.getElementById('musteri-tc').value = m.tc_kimlik || '';
+  openModal('musteri-modal');
+}
+
+async function saveMusteri() {
+  const id = document.getElementById('musteri-edit-id').value;
+  const data = {
+    ad_soyad: document.getElementById('musteri-ad').value.trim(),
+    telefon: document.getElementById('musteri-tel').value.trim() || null,
+    email: document.getElementById('musteri-email').value.trim() || null,
+    tc_kimlik: document.getElementById('musteri-tc').value.trim() || null,
+  };
+  if (!data.ad_soyad) { toast('Ad Soyad zorunlu!', 'error'); return; }
+  let err;
+  if (id) {
+    ({ error: err } = await sb.from('musteriler').update(data).eq('id', id));
+  } else {
+    ({ error: err } = await sb.from('musteriler').insert(data));
+  }
+  if (err) { toast('Hata: ' + err.message, 'error'); return; }
+  toast(id ? 'Müşteri güncellendi ✓' : 'Müşteri eklendi ✓');
+  closeModal('musteri-modal');
+  loadMusteriler();
+}
+
+async function deleteMusteri(id) {
+  if (!confirm('Bu müşteriyi silmek istediğinizden emin misiniz?')) return;
+  const { error } = await sb.from('musteriler').delete().eq('id', id);
+  if (error) { toast('Hata: ' + error.message, 'error'); return; }
+  toast('Müşteri silindi');
+  loadMusteriler();
+}
+
+// ── ZİYARETLER ───────────────────────────────────────────
+async function loadZiyaretler() {
+  const now = new Date();
+  const today = now.toISOString().split('T')[0];
+  const weekAgo = new Date(now - 7 * 86400000).toISOString().split('T')[0];
+
+  const { count: bugun } = await sb.from('ziyaretler').select('*', { count: 'exact', head: true }).gte('ziyaret_tarihi', today + 'T00:00:00');
+  const { count: hafta } = await sb.from('ziyaretler').select('*', { count: 'exact', head: true }).gte('ziyaret_tarihi', weekAgo + 'T00:00:00');
+  const { count: toplam } = await sb.from('ziyaretler').select('*', { count: 'exact', head: true });
+
+  document.getElementById('viz-bugun').textContent = bugun ?? 0;
+  document.getElementById('viz-hafta').textContent = hafta ?? 0;
+  document.getElementById('viz-toplam').textContent = toplam ?? 0;
+
+  // Son 7 gün bar chart
+  const { data: vizData } = await sb.from('ziyaretler').select('ziyaret_tarihi').gte('ziyaret_tarihi', weekAgo + 'T00:00:00');
+  const dayMap = {};
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now - i * 86400000).toISOString().split('T')[0];
+    dayMap[d] = 0;
+  }
+  (vizData || []).forEach(v => {
+    const d = v.ziyaret_tarihi.split('T')[0];
+    if (dayMap[d] !== undefined) dayMap[d]++;
+  });
+
+  const maxVal = Math.max(...Object.values(dayMap), 1);
+  const barsEl = document.getElementById('visit-bars');
+  const days = ['Pzr','Pzt','Sal','Çrş','Prş','Cum','Cmt'];
+  barsEl.innerHTML = Object.entries(dayMap).map(([date, count]) => {
+    const pct = Math.max((count / maxVal) * 100, 5);
+    const d = new Date(date);
+    const label = days[d.getDay()] + ' ' + d.getDate();
+    return `<div class="visit-day">
+      <div class="visit-day-label">${label}</div>
+      <div class="visit-bar-wrap"><div class="visit-bar" style="width:${pct}%">${count}</div></div>
+    </div>`;
+  }).join('');
+
+  // Son ziyaretler
+  const { data: sonZiy } = await sb.from('ziyaretler').select('*').order('ziyaret_tarihi', { ascending: false }).limit(20);
+  const el = document.getElementById('ziyaretler-table');
+  if (!sonZiy || !sonZiy.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">📈</div>Henüz ziyaret yok</div>'; return; }
+  el.innerHTML = '<table><thead><tr><th>Sayfa</th><th>Tarih / Saat</th><th>IP</th></tr></thead><tbody>' +
+    sonZiy.map(z => `<tr>
+      <td>${z.sayfa || '—'}</td>
+      <td>${new Date(z.ziyaret_tarihi).toLocaleString('tr-TR')}</td>
+      <td>${z.ip_adresi || '—'}</td>
+    </tr>`).join('') +
+    '</tbody></table>';
+}
+</script>
+</body>
+</html>
