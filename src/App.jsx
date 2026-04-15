@@ -59,7 +59,6 @@ const T = {
     footerLegalLinks: ["Политика конфиденциальности", "Политика cookies", "Условия использования", "Защита данных"],
     footerCopyright: "© 2026 LocalRent Türkiye. Все права защищены.",
     rentIn: "Аренда авто",
-    // Pages
     carsPageTitle: "Все автомобили",
     carsPageSub: "Выберите авто — мы пришлём лучшую цену в течение 30 минут",
     blogPageTitle: "Блог",
@@ -514,6 +513,7 @@ export default function App() {
   const [form, setForm] = useState({ name: "", surname: "", phone: "", email: "", flight: "", notes: "" });
   const [done, setDone] = useState(false);
   const [reservationNo, setReservationNo] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const t = T[lang];
   const blogList = blogs[lang];
@@ -555,6 +555,7 @@ export default function App() {
     const url = pg === "home" ? "/" : "/" + pg;
     window.history.pushState({ page: pg }, "", url);
     setPage(pg);
+    setMobileMenuOpen(false);
     window.scrollTo(0, 0);
   };
 
@@ -571,11 +572,11 @@ export default function App() {
   const navPages = [["cars"], ["locations"], ["terms"], ["reservation"], ["blog"], ["faq"], ["about"], ["contact"]];
 
   if (done) return (
-    <div style={{ fontFamily: "Nunito, sans-serif", background: "#f0f7f0", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ fontFamily: "Nunito, sans-serif", background: "#f0f7f0", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap');`}</style>
-      <div style={{ background: "#fff", borderRadius: 16, padding: "56px 48px", textAlign: "center", maxWidth: 480, boxShadow: "0 8px 40px rgba(0,0,0,0.1)" }}>
+      <div style={{ background: "#fff", borderRadius: 16, padding: "40px 32px", textAlign: "center", maxWidth: 480, width: "100%", boxShadow: "0 8px 40px rgba(0,0,0,0.1)" }}>
         <div style={{ fontSize: 72, marginBottom: 20 }}>✅</div>
-        <h2 style={{ fontFamily: "Montserrat, sans-serif", fontSize: 28, color: "#1a5c2a", marginBottom: 12 }}>{t.doneTitle}</h2>
+        <h2 style={{ fontFamily: "Montserrat, sans-serif", fontSize: 24, color: "#1a5c2a", marginBottom: 12 }}>{t.doneTitle}</h2>
         <div style={{ background: "#f0f9f3", border: "2px solid #2d8a47", borderRadius: 10, padding: "16px 24px", marginBottom: 20 }}>
           <div style={{ fontSize: 12, color: "#888", marginBottom: 4 }}>{t.doneReqNo}</div>
           <div style={{ fontFamily: "Montserrat,sans-serif", fontSize: 28, fontWeight: 900, color: "#1a5c2a", letterSpacing: 2 }}>{reservationNo}</div>
@@ -595,21 +596,21 @@ export default function App() {
     </div>
   );
 
- const CarCard = ({ car }) => (
+  const CarCard = ({ car }) => (
     <div className="car-card" onClick={() => { setSelectedCar(car); goTo("extras"); }}>
-      <img src={car.image} alt={`${car.name} — rent a car Antalya`} style={{ width: "100%", height: 180, objectFit: "cover" }} onError={e => e.target.style.display="none"} />
+      <img src={car.image} alt={`${car.name} — rent a car Antalya`} style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }} onError={e => e.target.style.display="none"} />
       <div style={{ padding: "16px 20px 20px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
           <div>
             <span className="badge" style={{ background: "#e8f5ec", color: "#2d8a47", marginBottom: 6, display: "block", width: "fit-content" }}>{car.category[lang]}</span>
             <div style={{ fontFamily: "Montserrat,sans-serif", fontSize: 17, fontWeight: 800 }}>{car.name}</div>
           </div>
-          <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 16, fontWeight: 800, color: "#2d8a47" }}>{lang==="ru"?"от $":lang==="tr"?"$":"from $"}{car.price}{lang==="tr"?" itibaren":""}{t.perDay}</div>
+          <div style={{ textAlign: "right", flexShrink: 0, marginLeft: 8 }}>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "#2d8a47" }}>{lang==="ru"?"от $":lang==="tr"?"$":"from $"}{car.price}{t.perDay}</div>
             {days && <div style={{ fontSize: 11, color: "#999" }}>{t.approx}{days} {days === 1 ? t.day : t.days}</div>}
           </div>
         </div>
-        <div style={{ display: "flex", gap: 16, fontSize: 13, color: "#666", marginBottom: 14 }}>
+        <div style={{ display: "flex", gap: 12, fontSize: 12, color: "#666", marginBottom: 14, flexWrap: "wrap" }}>
           <span>👥 {car.seats} {t.seats}</span>
           <span>⚙️ {car.transmission[lang]}</span>
           <span>⛽ {car.fuel[lang]}</span>
@@ -641,8 +642,8 @@ export default function App() {
         .extra-card { border: 2px solid #e8e8e8; border-radius: 10px; padding: 14px; cursor: pointer; transition: all .2s; text-align: center; }
         .extra-card:hover { border-color: #2d8a47; }
         .extra-card.sel-extra { border-color: #2d8a47; background: #f0f9f3; }
-        .step-bar { display: flex; gap: 0; margin-bottom: 40px; }
-        .step { flex: 1; padding: 12px; text-align: center; font-size: 13px; font-weight: 700; border-bottom: 3px solid #e0e0e0; color: #999; }
+        .step-bar { display: flex; gap: 0; margin-bottom: 40px; overflow-x: auto; }
+        .step { flex: 1; padding: 12px 6px; text-align: center; font-size: 12px; font-weight: 700; border-bottom: 3px solid #e0e0e0; color: #999; white-space: nowrap; min-width: 0; }
         .step.active { border-bottom-color: #2d8a47; color: #2d8a47; }
         .step.done-step { border-bottom-color: #2d8a47; color: #2d8a47; }
         input.sel { appearance: none; }
@@ -651,39 +652,78 @@ export default function App() {
         .lang-btn.active { background: #2d8a47; color: #fff; border-radius: 4px; }
         .lang-btn:not(.active) { color: #666; }
         .lang-btn:not(.active):hover { color: #2d8a47; }
+        .mob-menu-btn { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+        .mob-menu { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #fff; z-index: 999; padding: 24px; overflow-y: auto; }
+        .mob-menu.open { display: flex; flex-direction: column; }
+
         @media (max-width: 768px) {
+          .top-bar { padding: 8px 16px !important; font-size: 11px !important; }
+          .top-bar-right { display: none !important; }
           nav { padding: 12px 16px !important; }
-          nav > div:last-child { display: none !important; }
-          .top-bar { padding: 8px 16px !important; font-size: 11px !important; overflow: hidden; }
-          .hero { padding: 40px 16px 48px !important; }
-          .search-box { padding: 20px 16px !important; }
+          .nav-links { display: none !important; }
+          .mob-menu-btn { display: block !important; }
+          .hero { padding: 32px 16px 48px !important; }
+          .hero h1 { font-size: 32px !important; }
+          .hero p { font-size: 14px !important; }
+          .search-box { padding: 16px !important; }
           .search-grid { grid-template-columns: 1fr !important; }
           .why-grid { grid-template-columns: 1fr 1fr !important; }
           .cars-grid { grid-template-columns: 1fr !important; }
           .blog-grid { grid-template-columns: 1fr !important; }
-          .features-grid { grid-template-columns: repeat(3,1fr) !important; }
+          .features-grid { grid-template-columns: repeat(2,1fr) !important; gap: 20px !important; }
+          .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 24px !important; }
+          .footer-bottom { flex-direction: column !important; gap: 8px !important; text-align: center; }
           .booking-grid { grid-template-columns: 1fr !important; }
           .about-grid { grid-template-columns: 1fr !important; }
           .locations-grid { grid-template-columns: 1fr 1fr !important; }
           .contact-grid { grid-template-columns: 1fr !important; }
-          .extras-grid { grid-template-columns: 1fr !important; }
+          .extras-grid { grid-template-columns: 1fr 1fr !important; }
+          .extras-layout { grid-template-columns: 1fr !important; }
           .section-pad { padding: 40px 16px !important; }
-          .mob-lang { display: flex !important; }
+          .page-pad { padding: 28px 16px !important; }
+          .res-grid { grid-template-columns: 1fr !important; }
         }
         @media (max-width: 480px) {
           .why-grid { grid-template-columns: 1fr !important; }
           .features-grid { grid-template-columns: repeat(2,1fr) !important; }
           .locations-grid { grid-template-columns: 1fr !important; }
+          .footer-grid { grid-template-columns: 1fr !important; }
+          .extras-grid { grid-template-columns: 1fr !important; }
+          .hero h1 { font-size: 26px !important; }
         }
       `}</style>
 
+      {/* MOBILE MENU */}
+      <div className={`mob-menu ${mobileMenuOpen ? "open" : ""}`}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 32 }}>
+          <div style={{ fontFamily: "Montserrat,sans-serif", fontSize: 22, fontWeight: 900, color: "#1a5c2a" }}>Local<span style={{ color: "#2d8a47" }}>Rent</span></div>
+          <button onClick={() => setMobileMenuOpen(false)} style={{ background: "none", border: "none", fontSize: 28, cursor: "pointer", color: "#333" }}>✕</button>
+        </div>
+        <div style={{ display: "flex", gap: 6, marginBottom: 24 }}>
+          {["ru","tr","en"].map(l => (
+            <button key={l} onClick={() => setLang(l)} className={`lang-btn ${lang===l?"active":""}`}>{l.toUpperCase()}</button>
+          ))}
+        </div>
+        {t.nav.map((label, i) => (
+          <div key={label} onClick={() => goTo(navPages[i][0])}
+            style={{ padding: "16px 0", borderBottom: "1px solid #eee", fontSize: 18, fontWeight: 700, color: "#222", cursor: "pointer" }}>
+            {label}
+          </div>
+        ))}
+        <button className="green-btn" style={{ marginTop: 24, width: "100%" }} onClick={() => goTo("cars")}>{t.navBtn}</button>
+        <div style={{ marginTop: 24, display: "flex", flexDirection: "column", gap: 12 }}>
+          <a href={`tel:${PHONE}`} style={{ color: "#2d8a47", textDecoration: "none", fontWeight: 700 }}>📞 {PHONE}</a>
+          <a href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer" style={{ color: "#25d366", textDecoration: "none", fontWeight: 700 }}>💬 WhatsApp</a>
+        </div>
+      </div>
+
       {/* TOP BAR */}
       <div className="top-bar" style={{ background: "#1a5c2a", color: "#fff", padding: "8px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13 }}>
-        <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
           <a href={`tel:${PHONE}`} style={{ color: "#fff", textDecoration: "none", fontWeight: 700 }}>📞 {PHONE}</a>
           <a href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer" style={{ color: "#7fff9a", textDecoration: "none", fontWeight: 700 }}>💬 WhatsApp</a>
         </div>
-        <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+        <div className="top-bar-right" style={{ display: "flex", gap: 16, alignItems: "center" }}>
           <a href={INSTAGRAM} target="_blank" rel="noreferrer" style={{ color: "#fff", textDecoration: "none" }}>📸 Instagram</a>
           <span style={{ color: "rgba(255,255,255,0.5)" }}>|</span>
           <div style={{ display: "flex", gap: 4 }}>
@@ -698,75 +738,80 @@ export default function App() {
 
       {/* NAVBAR */}
       <nav style={{ padding: "16px 48px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #eee", background: "#fff", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
-        <div style={{ fontFamily: "Montserrat, sans-serif", fontSize: 26, fontWeight: 900, color: "#1a5c2a", cursor: "pointer" }} onClick={() => goTo("home")}>
+        <div style={{ fontFamily: "Montserrat, sans-serif", fontSize: 24, fontWeight: 900, color: "#1a5c2a", cursor: "pointer" }} onClick={() => goTo("home")}>
           Local<span style={{ color: "#2d8a47" }}>Rent</span>
-          <span style={{ fontSize: 11, color: "#999", fontFamily: "Nunito,sans-serif", fontWeight: 600, marginLeft: 10, letterSpacing: 2 }}>TÜRKİYE</span>
+          <span style={{ fontSize: 11, color: "#999", fontFamily: "Nunito,sans-serif", fontWeight: 600, marginLeft: 8, letterSpacing: 2 }}>TÜRKİYE</span>
         </div>
-        <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
+        <div className="nav-links" style={{ display: "flex", gap: 24, alignItems: "center" }}>
           {t.nav.map((label, i) => (
             <span key={label} onClick={() => goTo(navPages[i][0])} style={{ fontSize: 14, fontWeight: 700, color: page === navPages[i][0] ? "#2d8a47" : "#444", cursor: "pointer", transition: "color .2s" }}
               onMouseEnter={e => e.target.style.color = "#2d8a47"}
               onMouseLeave={e => e.target.style.color = page === navPages[i][0] ? "#2d8a47" : "#444"}
             >{label}</span>
           ))}
-          <button className="green-btn" style={{ padding: "10px 22px", fontSize: 14 }} onClick={() => goTo("cars")}>{t.navBtn}</button>
+          <button className="green-btn" style={{ padding: "10px 20px", fontSize: 13 }} onClick={() => goTo("cars")}>{t.navBtn}</button>
         </div>
+        <button className="mob-menu-btn" onClick={() => setMobileMenuOpen(true)} style={{ display: "none" }}>
+          <svg width="24" height="24" fill="none" stroke="#1a5c2a" strokeWidth="2.5" strokeLinecap="round">
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
       </nav>
 
       {page === "home" && <>
         {/* HERO */}
-        <div className="hero" style={{ backgroundImage: "linear-gradient(135deg, rgba(26,92,42,0.75) 0%, rgba(45,138,71,0.70) 60%, rgba(26,92,42,0.78) 100%), url(/antalya.jpg)", backgroundSize: "cover", backgroundPosition: "center", padding: "40px 48px 80px", position: "relative", marginTop: "-1px", overflow: "hidden" }}>
-          <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center", position: "relative" }}>
-            <div style={{ display: "inline-block", background: "rgba(255,255,255,0.15)", borderRadius: 20, padding: "6px 20px", fontSize: 13, color: "#fff", fontWeight: 700, marginBottom: 8, letterSpacing: 1 }}>
+        <div className="hero" style={{ backgroundImage: "linear-gradient(135deg, rgba(26,92,42,0.75) 0%, rgba(45,138,71,0.70) 60%, rgba(26,92,42,0.78) 100%), url(/antalya.jpg)", backgroundSize: "cover", backgroundPosition: "center", padding: "40px 48px 80px" }}>
+          <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
+            <div style={{ display: "inline-block", background: "rgba(255,255,255,0.15)", borderRadius: 20, padding: "6px 20px", fontSize: 12, color: "#fff", fontWeight: 700, marginBottom: 8, letterSpacing: 1 }}>
               {t.heroBadge}
             </div>
-            <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: "clamp(36px,5vw,60px)", fontWeight: 900, color: "#fff", lineHeight: 1.1, marginBottom: 16, whiteSpace: "pre-line" }}>
+            <h1 className="hero-h1" style={{ fontFamily: "Montserrat,sans-serif", fontSize: "clamp(28px,5vw,60px)", fontWeight: 900, color: "#fff", lineHeight: 1.1, marginBottom: 16, whiteSpace: "pre-line" }}>
               {t.heroTitle}
             </h1>
-            <p style={{ fontSize: 18, color: "rgba(255,255,255,0.85)", marginBottom: 48, lineHeight: 1.6 }}>
+            <p style={{ fontSize: "clamp(13px,2vw,18px)", color: "rgba(255,255,255,0.85)", marginBottom: 36, lineHeight: 1.6 }}>
               {t.heroSub}
             </p>
-            <div className="search-box" style={{ background: "#fff", borderRadius: 16, padding: "28px 32px", boxShadow: "0 20px 60px rgba(0,0,0,0.2)", textAlign: "left" }}>
-              <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#666", marginBottom: 20, cursor: "pointer" }}>
+            <div className="search-box" style={{ background: "#fff", borderRadius: 16, padding: "24px 28px", boxShadow: "0 20px 60px rgba(0,0,0,0.2)", textAlign: "left" }}>
+              <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#666", marginBottom: 16, cursor: "pointer" }}>
                 <input type="checkbox" checked={!search.sameReturn} onChange={e => setS("sameReturn", !e.target.checked)} style={{ accentColor: "#2d8a47" }} />
                 {t.sameReturn}
               </label>
-              <div className="search-grid" style={{ display: "grid", gridTemplateColumns: search.sameReturn ? "2fr 1fr 1fr 1fr 1fr auto" : "1fr 1fr 1fr 1fr 1fr 1fr auto", gap: 12, alignItems: "end" }}>
+              <div className="search-grid" style={{ display: "grid", gridTemplateColumns: search.sameReturn ? "2fr 1fr 1fr 1fr 1fr auto" : "1fr 1fr 1fr 1fr 1fr 1fr auto", gap: 10, alignItems: "end" }}>
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, letterSpacing: 1, textTransform: "uppercase" }}>{t.pickup}</div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#2d8a47", marginBottom: 5, letterSpacing: 1, textTransform: "uppercase" }}>{t.pickup}</div>
                   <select aria-label={t.pickup} className="sel" value={search.pickup} onChange={e => setS("pickup", e.target.value)}>
                     <option value="">{t.chooseLocation}</option>
                     {cities.map(c => <option key={c}>{c}</option>)}
                   </select>
                 </div>
                 {!search.sameReturn && <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, letterSpacing: 1, textTransform: "uppercase" }}>{t.returnLoc}</div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#2d8a47", marginBottom: 5, letterSpacing: 1, textTransform: "uppercase" }}>{t.returnLoc}</div>
                   <select aria-label={t.returnLoc} className="sel" value={search.returnLoc} onChange={e => setS("returnLoc", e.target.value)}>
                     <option value="">{t.chooseLocation}</option>
                     {cities.map(c => <option key={c}>{c}</option>)}
                   </select>
                 </div>}
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, letterSpacing: 1, textTransform: "uppercase" }}>{t.pickupDate}</div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#2d8a47", marginBottom: 5, letterSpacing: 1, textTransform: "uppercase" }}>{t.pickupDate}</div>
                   <input type="date" aria-label={t.pickupDate} className="sel" value={search.pickupDate} onChange={e => setS("pickupDate", e.target.value)} />
                 </div>
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, letterSpacing: 1, textTransform: "uppercase" }}>{t.pickupTime}</div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#2d8a47", marginBottom: 5, letterSpacing: 1, textTransform: "uppercase" }}>{t.pickupTime}</div>
                   <select aria-label={t.pickupTime} className="sel" value={search.pickupTime} onChange={e => setS("pickupTime", e.target.value)}>
                     {times.map(t2 => <option key={t2}>{t2}</option>)}
                   </select>
                 </div>
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, letterSpacing: 1, textTransform: "uppercase" }}>{t.returnDate}</div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#2d8a47", marginBottom: 5, letterSpacing: 1, textTransform: "uppercase" }}>{t.returnDate}</div>
                   <input type="date" aria-label={t.returnDate} className="sel" value={search.returnDate} onChange={e => setS("returnDate", e.target.value)} />
                 </div>
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, letterSpacing: 1, textTransform: "uppercase" }}>{t.pickupTime}</div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#2d8a47", marginBottom: 5, letterSpacing: 1, textTransform: "uppercase" }}>{t.pickupTime}</div>
                   <select aria-label={t.returnTime} className="sel" value={search.returnTime} onChange={e => setS("returnTime", e.target.value)}>
                     {times.map(t2 => <option key={t2}>{t2}</option>)}
                   </select>
                 </div>
-                <button className="green-btn" style={{ whiteSpace: "nowrap", height: 44 }} onClick={() => goTo("cars")}>
+                <button className="green-btn" style={{ whiteSpace: "nowrap", height: 44, padding: "0 16px" }} onClick={() => goTo("cars")}>
                   {t.searchBtn}
                 </button>
               </div>
@@ -777,14 +822,14 @@ export default function App() {
         {/* WHY US */}
         <div className="section-pad" style={{ padding: "64px 48px", background: "#f9fdf9" }}>
           <div style={{ maxWidth: 960, margin: "0 auto" }}>
-            <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, textAlign: "center", color: "#1a5c2a", marginBottom: 8 }}>{t.whyTitle}</h2>
-            <p style={{ textAlign: "center", color: "#888", marginBottom: 48 }}>{t.whySub}</p>
-            <div className="why-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 28 }}>
+            <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: "clamp(22px,4vw,30px)", fontWeight: 900, textAlign: "center", color: "#1a5c2a", marginBottom: 8 }}>{t.whyTitle}</h2>
+            <p style={{ textAlign: "center", color: "#888", marginBottom: 40 }}>{t.whySub}</p>
+            <div className="why-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 20 }}>
               {t.why.map(([ic, title, desc]) => (
-                <div key={title} style={{ background: "#fff", borderRadius: 14, padding: "28px 24px", textAlign: "center", boxShadow: "0 2px 16px rgba(0,0,0,0.06)", border: "1.5px solid #e8f5ec" }}>
-                  <div style={{ fontSize: 40, marginBottom: 14 }}>{ic}</div>
-                  <div style={{ fontWeight: 800, fontSize: 16, color: "#1a5c2a", marginBottom: 8 }}>{title}</div>
-                  <div style={{ fontSize: 14, color: "#888", lineHeight: 1.6 }}>{desc}</div>
+                <div key={title} style={{ background: "#fff", borderRadius: 14, padding: "24px 20px", textAlign: "center", boxShadow: "0 2px 16px rgba(0,0,0,0.06)", border: "1.5px solid #e8f5ec" }}>
+                  <div style={{ fontSize: 36, marginBottom: 12 }}>{ic}</div>
+                  <div style={{ fontWeight: 800, fontSize: 15, color: "#1a5c2a", marginBottom: 8 }}>{title}</div>
+                  <div style={{ fontSize: 13, color: "#888", lineHeight: 1.6 }}>{desc}</div>
                 </div>
               ))}
             </div>
@@ -794,14 +839,14 @@ export default function App() {
         {/* CARS PREVIEW */}
         <div className="section-pad" style={{ padding: "64px 48px" }}>
           <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 36 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 32, flexWrap: "wrap", gap: 12 }}>
               <div>
-                <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a" }}>{t.carsTitle}</h2>
+                <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: "clamp(22px,4vw,30px)", fontWeight: 900, color: "#1a5c2a" }}>{t.carsTitle}</h2>
                 <p style={{ color: "#888", marginTop: 4 }}>{t.carsSub}</p>
               </div>
               <button className="outline-btn" onClick={() => goTo("cars")}>{t.carsAll}</button>
             </div>
-            <div className="cars-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
+            <div className="cars-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
               {cars.filter(car => [8,7,9].includes(car.id)).map(car => <CarCard key={car.id} car={car} />)}
             </div>
           </div>
@@ -810,17 +855,17 @@ export default function App() {
         {/* BLOG PREVIEW */}
         <div className="section-pad" style={{ padding: "64px 48px", background: "#f9fdf9" }}>
           <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 36 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 32, flexWrap: "wrap", gap: 12 }}>
               <div>
-                <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a" }}>{t.blogTitle}</h2>
+                <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: "clamp(22px,4vw,30px)", fontWeight: 900, color: "#1a5c2a" }}>{t.blogTitle}</h2>
                 <p style={{ color: "#888", marginTop: 4 }}>{t.blogSub}</p>
               </div>
               <button className="outline-btn" onClick={() => goTo("blog")}>{t.blogAll}</button>
             </div>
-            <div className="blog-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
+            <div className="blog-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
               {blogList.map(blog => (
                 <div key={blog.id} onClick={() => goTo("blog-" + blog.id)} style={{ border: "1.5px solid #e8f5ec", borderRadius: 14, overflow: "hidden", cursor: "pointer", background: "#fff" }}>
-                  <img src={blog.image} alt={blog.title} style={{ width: "100%", height: 160, objectFit: "cover" }} />
+                  <img src={blog.image} alt={blog.title} style={{ width: "100%", height: 160, objectFit: "cover", display: "block" }} />
                   <div style={{ padding: "16px 20px" }}>
                     <span style={{ background: "#e8f5ec", color: "#2d8a47", borderRadius: 20, padding: "3px 10px", fontSize: 12, fontWeight: 700 }}>{blog.category}</span>
                     <h3 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 15, fontWeight: 800, color: "#1a5c2a", margin: "10px 0 8px", lineHeight: 1.4 }}>{blog.title}</h3>
@@ -836,32 +881,29 @@ export default function App() {
         </div>
 
         {/* FEATURES */}
-        <div style={{ background: "#1a5c2a", padding: "60px 48px" }}>
+        <div style={{ background: "#1a5c2a", padding: "60px 24px" }}>
           <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-            <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 24, fontWeight: 900, color: "#fff", textAlign: "center", marginBottom: 8 }}>{t.featTitle}</h2>
-            <div style={{ width: 60, height: 3, background: "rgba(255,255,255,0.5)", margin: "12px auto 48px" }} />
-            <div className="features-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 32 }}>
+            <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: "clamp(16px,3vw,24px)", fontWeight: 900, color: "#fff", textAlign: "center", marginBottom: 8 }}>{t.featTitle}</h2>
+            <div style={{ width: 60, height: 3, background: "rgba(255,255,255,0.5)", margin: "12px auto 40px" }} />
+            <div className="features-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 24 }}>
               {[
                 { d: "M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.955 11.955 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z", text: lang==="ru"?"Полное КАСКО без франшизы":lang==="tr"?"Muafiyetsiz Tam Kasko":"Full Comprehensive Insurance" },
                 { d: "M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z", text: lang==="ru"?"Страхование от несчастных случаев":lang==="tr"?"Kaza Sigortası":"Accident Insurance" },
                 { d: "M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z", text: lang==="ru"?"Страховка от угона и пожара":lang==="tr"?"Hırsızlık ve Yangın Sigortası":"Theft & Fire Insurance" },
-                
                 { d: "M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z", text: lang==="ru"?"Помощь на дороге 24/7":lang==="tr"?"7/24 Yol Yardımı":"24/7 Roadside Assistance" },
                 { d: "M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z", text: lang==="ru"?"Кредитная карта не требуется":lang==="tr"?"Kredi Kartı Gerekmiyor":"No Credit Card Required" },
                 { d: "M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75", text: lang==="ru"?"Нет скрытых платежей":lang==="tr"?"Gizli Ücret Yok":"No Hidden Fees" },
                 { d: "M9 14.25l6-6m4.5-3.493V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0c1.1.128 1.907 1.077 1.907 2.185zM9.75 9h.008v.008H9.75V9zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 4.5h.008v.008h-.008V13.5zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z", text: lang==="ru"?"Все налоги включены":lang==="tr"?"Tüm Vergiler Dahil":"All Taxes Included" },
                 { d: "M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z", text: lang==="ru"?"Оплата наличными или картой":lang==="tr"?"Nakit veya Kartla Ödeme":"Cash or Card Payment" },
-              
                 { d: "M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c-.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z", text: lang==="ru"?"Неограниченный пробег":lang==="tr"?"Sınırsız Kilometre":"Unlimited Mileage" },
                 { d: "M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z", text: lang==="ru"?"Все авто с кондиционером":lang==="tr"?"Tüm Araçlarda Klima":"All Cars with A/C" },
                 { d: "M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636", text: lang==="ru"?"Авто для некурящих":lang==="tr"?"Sigara İçilmez":"Non-smoking Cars" },
-              
               ].map((item, i) => (
                 <div key={i} style={{ textAlign: "center" }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={1.5} style={{ width: 48, height: 48, marginBottom: 12 }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={1.5} style={{ width: 40, height: 40, marginBottom: 10 }}>
                     <path strokeLinecap="round" strokeLinejoin="round" d={item.d} />
                   </svg>
-                  <div style={{ fontSize: 13, lineHeight: 1.5, color: "rgba(255,255,255,0.9)", fontWeight: 600 }}>{item.text}</div>
+                  <div style={{ fontSize: 12, lineHeight: 1.5, color: "rgba(255,255,255,0.9)", fontWeight: 600 }}>{item.text}</div>
                 </div>
               ))}
             </div>
@@ -869,15 +911,13 @@ export default function App() {
         </div>
 
         {/* FOOTER */}
-        <footer style={{ background: "#1a5c2a", color: "#fff", padding: "48px 48px 24px" }}>
+        <footer style={{ background: "#1a5c2a", color: "#fff", padding: "48px 24px 24px" }}>
           <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 40, marginBottom: 40 }}>
+            <div className="footer-grid" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 40, marginBottom: 40 }}>
               <div>
                 <div style={{ fontFamily: "Montserrat,sans-serif", fontSize: 22, fontWeight: 900, marginBottom: 12 }}>LocalRent</div>
                 <div style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", lineHeight: 1.8, marginBottom: 16, whiteSpace: "pre-line" }}>{t.footerDesc}</div>
-                <div style={{ display: "flex", gap: 16 }}>
-                  <a href={`tel:${PHONE}`} style={{ color: "#fff", textDecoration: "none", fontSize: 13, fontWeight: 600 }}>📞 {PHONE}</a>
-                </div>
+                <div><a href={`tel:${PHONE}`} style={{ color: "#fff", textDecoration: "none", fontSize: 13, fontWeight: 600 }}>📞 {PHONE}</a></div>
                 <div style={{ marginTop: 8 }}><a href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer" style={{ color: "#7fff9a", textDecoration: "none", fontSize: 13, fontWeight: 600 }}>💬 WhatsApp</a></div>
                 <div style={{ marginTop: 8 }}><a href={INSTAGRAM} target="_blank" rel="noreferrer" style={{ color: "#fff", textDecoration: "none", fontSize: 13 }}>📸 Instagram</a></div>
               </div>
@@ -912,7 +952,7 @@ export default function App() {
                 ))}
               </div>
             </div>
-            <div style={{ borderTop: "1px solid rgba(255,255,255,0.15)", paddingTop: 20, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+            <div className="footer-bottom" style={{ borderTop: "1px solid rgba(255,255,255,0.15)", paddingTop: 20, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>{t.footerCopyright}</div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>localrent.com.tr</div>
             </div>
@@ -922,16 +962,16 @@ export default function App() {
 
       {/* BLOG LIST */}
       {page === "blog" && (
-        <div style={{ maxWidth: 960, margin: "0 auto", padding: "40px 48px" }}>
-          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>{t.blogPageTitle}</h1>
-          <p style={{ color: "#888", marginBottom: 40 }}>{t.blogPageSub}</p>
-          <div className="blog-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 28 }}>
+        <div className="page-pad" style={{ maxWidth: 960, margin: "0 auto", padding: "40px 48px" }}>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: "clamp(22px,4vw,30px)", fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>{t.blogPageTitle}</h1>
+          <p style={{ color: "#888", marginBottom: 32 }}>{t.blogPageSub}</p>
+          <div className="blog-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
             {blogList.map(blog => (
               <div key={blog.id} onClick={() => goTo("blog-" + blog.id)} style={{ border: "1.5px solid #e8f5ec", borderRadius: 14, overflow: "hidden", cursor: "pointer", background: "#fff" }}>
-                <img src={blog.image} alt={blog.title} style={{ width: "100%", height: 180, objectFit: "cover" }} />
+                <img src={blog.image} alt={blog.title} style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }} />
                 <div style={{ padding: "20px" }}>
                   <span style={{ background: "#e8f5ec", color: "#2d8a47", borderRadius: 20, padding: "3px 10px", fontSize: 12, fontWeight: 700 }}>{blog.category}</span>
-                  <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 16, fontWeight: 800, color: "#1a5c2a", margin: "10px 0 8px", lineHeight: 1.4 }}>{blog.title}</h2>
+                  <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 15, fontWeight: 800, color: "#1a5c2a", margin: "10px 0 8px", lineHeight: 1.4 }}>{blog.title}</h2>
                   <p style={{ fontSize: 13, color: "#888", lineHeight: 1.6, marginBottom: 12 }}>{blog.excerpt}</p>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <span style={{ fontSize: 12, color: "#bbb" }}>{blog.date}</span>
@@ -945,11 +985,11 @@ export default function App() {
       )}
 
       {blogList.map(blog => page === "blog-" + blog.id && (
-        <div key={blog.id} style={{ maxWidth: 760, margin: "0 auto", padding: "40px 48px" }}>
+        <div key={blog.id} className="page-pad" style={{ maxWidth: 760, margin: "0 auto", padding: "40px 48px" }}>
           <button onClick={() => goTo("blog")} style={{ background: "none", border: "none", color: "#2d8a47", fontWeight: 700, cursor: "pointer", fontSize: 14, marginBottom: 24, padding: 0 }}>{t.blogBackBtn}</button>
-          <img src={blog.image} alt={blog.title} style={{ width: "100%", height: 300, objectFit: "cover", borderRadius: 14, marginBottom: 28 }} />
+          <img src={blog.image} alt={blog.title} style={{ width: "100%", height: 260, objectFit: "cover", borderRadius: 14, marginBottom: 28, display: "block" }} />
           <span style={{ background: "#e8f5ec", color: "#2d8a47", borderRadius: 20, padding: "3px 10px", fontSize: 12, fontWeight: 700 }}>{blog.category}</span>
-          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 28, fontWeight: 900, color: "#1a5c2a", margin: "12px 0 8px" }}>{blog.title}</h1>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: "clamp(20px,4vw,28px)", fontWeight: 900, color: "#1a5c2a", margin: "12px 0 8px" }}>{blog.title}</h1>
           <div style={{ fontSize: 13, color: "#bbb", marginBottom: 24 }}>{blog.date}</div>
           <div style={{ fontSize: 15, color: "#444", lineHeight: 1.9, whiteSpace: "pre-line" }}>{blog.content}</div>
           <div style={{ marginTop: 40, background: "#f0f9f3", border: "1.5px solid #d0eeda", borderRadius: 12, padding: "24px", textAlign: "center" }}>
@@ -961,19 +1001,19 @@ export default function App() {
 
       {/* FAQ */}
       {page === "faq" && (
-        <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
-          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>{t.faqTitle}</h1>
-          <p style={{ color: "#888", marginBottom: 40 }}>{t.faqSub}</p>
+        <div className="page-pad" style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: "clamp(22px,4vw,30px)", fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>{t.faqTitle}</h1>
+          <p style={{ color: "#888", marginBottom: 36 }}>{t.faqSub}</p>
           {t.faqs.map((item, i) => (
             <div key={i} style={{ borderBottom: "1px solid #eee", paddingBottom: 24, marginBottom: 24 }}>
-              <div style={{ fontFamily: "Montserrat,sans-serif", fontSize: 16, fontWeight: 800, color: "#1a5c2a", marginBottom: 10, display: "flex", gap: 12, alignItems: "flex-start" }}>
+              <div style={{ fontFamily: "Montserrat,sans-serif", fontSize: 15, fontWeight: 800, color: "#1a5c2a", marginBottom: 10, display: "flex", gap: 12, alignItems: "flex-start" }}>
                 <span style={{ background: "#2d8a47", color: "#fff", borderRadius: "50%", width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, flexShrink: 0 }}>{i + 1}</span>
                 {item.q}
               </div>
-              <p style={{ fontSize: 15, color: "#555", lineHeight: 1.7, paddingLeft: 40 }}>{item.a}</p>
+              <p style={{ fontSize: 14, color: "#555", lineHeight: 1.7, paddingLeft: 40 }}>{item.a}</p>
             </div>
           ))}
-          <div style={{ background: "#1a5c2a", borderRadius: 14, padding: "28px 36px", color: "#fff", textAlign: "center", marginTop: 20 }}>
+          <div style={{ background: "#1a5c2a", borderRadius: 14, padding: "28px 24px", color: "#fff", textAlign: "center", marginTop: 20 }}>
             <p style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}>{t.faqNoAnswer}</p>
             <a href="https://wa.me/905400070095" target="_blank" rel="noreferrer" style={{ background: "#25d366", color: "#fff", textDecoration: "none", borderRadius: 8, padding: "12px 28px", fontWeight: 700, fontSize: 14 }}>{t.faqWA}</a>
           </div>
@@ -982,20 +1022,20 @@ export default function App() {
 
       {/* ABOUT */}
       {page === "about" && (
-        <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
-          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>{t.aboutTitle}</h1>
-          <p style={{ color: "#888", marginBottom: 40 }}>{t.aboutSub}</p>
+        <div className="page-pad" style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: "clamp(22px,4vw,30px)", fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>{t.aboutTitle}</h1>
+          <p style={{ color: "#888", marginBottom: 36 }}>{t.aboutSub}</p>
           <div className="about-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, marginBottom: 48 }}>
             <div>
-              <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 22, fontWeight: 800, color: "#1a5c2a", marginBottom: 16 }}>{t.aboutHistory}</h2>
+              <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 20, fontWeight: 800, color: "#1a5c2a", marginBottom: 16 }}>{t.aboutHistory}</h2>
               <p style={{ fontSize: 15, color: "#555", lineHeight: 1.8, marginBottom: 16 }}>{t.aboutP1}</p>
               <p style={{ fontSize: 15, color: "#555", lineHeight: 1.8 }}>{t.aboutP2}</p>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               {t.aboutStats.map(([num, label]) => (
-                <div key={label} style={{ background: "#f0f9f3", border: "1.5px solid #d0eeda", borderRadius: 12, padding: "20px 24px", display: "flex", alignItems: "center", gap: 20 }}>
-                  <div style={{ fontFamily: "Montserrat,sans-serif", fontSize: 36, fontWeight: 900, color: "#2d8a47" }}>{num}</div>
-                  <div style={{ fontSize: 15, color: "#555", fontWeight: 600 }}>{label}</div>
+                <div key={label} style={{ background: "#f0f9f3", border: "1.5px solid #d0eeda", borderRadius: 12, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16 }}>
+                  <div style={{ fontFamily: "Montserrat,sans-serif", fontSize: 32, fontWeight: 900, color: "#2d8a47" }}>{num}</div>
+                  <div style={{ fontSize: 14, color: "#555", fontWeight: 600 }}>{label}</div>
                 </div>
               ))}
             </div>
@@ -1005,23 +1045,23 @@ export default function App() {
 
       {/* LOCATIONS */}
       {page === "locations" && (
-        <div style={{ maxWidth: 960, margin: "0 auto", padding: "40px 48px" }}>
-          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>{t.locTitle}</h1>
-          <p style={{ color: "#888", marginBottom: 40 }}>{t.locSub}</p>
-          <div className="locations-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20, marginBottom: 40 }}>
+        <div className="page-pad" style={{ maxWidth: 1000, margin: "0 auto", padding: "40px 48px" }}>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: "clamp(22px,4vw,30px)", fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>{t.locTitle}</h1>
+          <p style={{ color: "#888", marginBottom: 32 }}>{t.locSub}</p>
+          <div className="locations-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16, marginBottom: 32 }}>
             {locations.map((loc) => (
-              <div key={loc.city.ru} style={{ background: "#fff", border: "1.5px solid #e8f5ec", borderRadius: 14, padding: "24px" }}>
-                <div style={{ fontSize: 32, marginBottom: 10 }}>{loc.icon}</div>
-                <h3 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 17, fontWeight: 800, color: "#1a5c2a", marginBottom: 12 }}>{loc.city[lang]}</h3>
+              <div key={loc.city.ru} style={{ background: "#fff", border: "1.5px solid #e8f5ec", borderRadius: 14, padding: "20px" }}>
+                <div style={{ fontSize: 28, marginBottom: 8 }}>{loc.icon}</div>
+                <h3 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 16, fontWeight: 800, color: "#1a5c2a", marginBottom: 10 }}>{loc.city[lang]}</h3>
                 {loc.locs[lang].map(l => (
-                  <div key={l} style={{ fontSize: 13, color: "#666", padding: "5px 0", borderBottom: "1px solid #f0f0f0", display: "flex", alignItems: "center", gap: 6 }}>
+                  <div key={l} style={{ fontSize: 13, color: "#666", padding: "4px 0", borderBottom: "1px solid #f0f0f0", display: "flex", alignItems: "center", gap: 6 }}>
                     <span style={{ color: "#2d8a47", fontSize: 10 }}>●</span> {l}
                   </div>
                 ))}
               </div>
             ))}
           </div>
-          <div style={{ background: "#1a5c2a", borderRadius: 14, padding: "28px 36px", color: "#fff", textAlign: "center" }}>
+          <div style={{ background: "#1a5c2a", borderRadius: 14, padding: "28px 24px", color: "#fff", textAlign: "center" }}>
             <p style={{ fontSize: 16, fontWeight: 700, marginBottom: 6 }}>{t.locNotFound}</p>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", marginBottom: 16 }}>{t.locNotFoundSub}</p>
             <a href="https://wa.me/905400070095" target="_blank" rel="noreferrer" style={{ background: "#25d366", color: "#fff", textDecoration: "none", borderRadius: 8, padding: "12px 28px", fontWeight: 700, fontSize: 14 }}>{t.faqWA}</a>
@@ -1031,25 +1071,25 @@ export default function App() {
 
       {/* CONTACT */}
       {page === "contact" && (
-        <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
-          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>{t.contactTitle}</h1>
-          <p style={{ color: "#888", marginBottom: 40 }}>{t.contactSub}</p>
-          <div className="contact-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40 }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div className="page-pad" style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: "clamp(22px,4vw,30px)", fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>{t.contactTitle}</h1>
+          <p style={{ color: "#888", marginBottom: 32 }}>{t.contactSub}</p>
+          <div className="contact-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {t.contactInfo.map(({ icon, title, value, href }) => (
-                <div key={title} style={{ display: "flex", alignItems: "center", gap: 16, background: "#f9fdf9", border: "1.5px solid #e8f5ec", borderRadius: 10, padding: "16px 20px" }}>
-                  <span style={{ fontSize: 28 }}>{icon}</span>
+                <div key={title} style={{ display: "flex", alignItems: "center", gap: 14, background: "#f9fdf9", border: "1.5px solid #e8f5ec", borderRadius: 10, padding: "14px 16px" }}>
+                  <span style={{ fontSize: 24 }}>{icon}</span>
                   <div>
-                    <div style={{ fontSize: 12, color: "#999", fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 }}>{title}</div>
-                    {href ? <a href={href} target="_blank" rel="noreferrer" style={{ fontSize: 15, color: "#2d8a47", fontWeight: 700, textDecoration: "none" }}>{value}</a>
-                    : <div style={{ fontSize: 15, color: "#333", fontWeight: 600 }}>{value}</div>}
+                    <div style={{ fontSize: 11, color: "#999", fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 }}>{title}</div>
+                    {href ? <a href={href} target="_blank" rel="noreferrer" style={{ fontSize: 14, color: "#2d8a47", fontWeight: 700, textDecoration: "none" }}>{value}</a>
+                    : <div style={{ fontSize: 14, color: "#333", fontWeight: 600 }}>{value}</div>}
                   </div>
                 </div>
               ))}
             </div>
-            <div style={{ background: "#f9fdf9", border: "1.5px solid #e8f5ec", borderRadius: 14, padding: "28px" }}>
+            <div style={{ background: "#f9fdf9", border: "1.5px solid #e8f5ec", borderRadius: 14, padding: "24px" }}>
               <h3 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 18, fontWeight: 800, color: "#1a5c2a", marginBottom: 20 }}>{t.contactWrite}</h3>
-              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {t.contactFields.map(([label, type, ph]) => (
                   <div key={label}>
                     <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 5, textTransform: "uppercase", letterSpacing: 0.5 }}>{label}</div>
@@ -1069,11 +1109,11 @@ export default function App() {
 
       {/* RESERVATION */}
       {page === "reservation" && (
-        <div style={{ maxWidth: 760, margin: "0 auto", padding: "40px 48px" }}>
-          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>{t.resTitle}</h1>
-          <p style={{ color: "#888", marginBottom: 36 }}>{t.resSub}</p>
-          <div style={{ background: "#f9fdf9", border: "1.5px solid #d0eeda", borderRadius: 14, padding: "32px" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+        <div className="page-pad" style={{ maxWidth: 760, margin: "0 auto", padding: "40px 48px" }}>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: "clamp(22px,4vw,30px)", fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>{t.resTitle}</h1>
+          <p style={{ color: "#888", marginBottom: 28 }}>{t.resSub}</p>
+          <div style={{ background: "#f9fdf9", border: "1.5px solid #d0eeda", borderRadius: 14, padding: "24px" }}>
+            <div className="res-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
               <div>
                 <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase" }}>{t.pickup}</div>
                 <select aria-label={t.pickup} className="sel" value={search.pickup} onChange={e => setS("pickup", e.target.value)}>
@@ -1109,9 +1149,9 @@ export default function App() {
                 </select>
               </div>
             </div>
-            <button className="green-btn" style={{ width: "100%", padding: 16, fontSize: 16 }} onClick={() => goTo("cars")}>{t.resSelectCar}</button>
+            <button className="green-btn" style={{ width: "100%", padding: 14, fontSize: 15 }} onClick={() => goTo("cars")}>{t.resSelectCar}</button>
           </div>
-          <div style={{ marginTop: 28, background: "#fff", border: "1.5px solid #e8f5ec", borderRadius: 14, padding: "24px 32px", textAlign: "center" }}>
+          <div style={{ marginTop: 24, background: "#fff", border: "1.5px solid #e8f5ec", borderRadius: 14, padding: "24px", textAlign: "center" }}>
             <p style={{ fontSize: 14, color: "#888", marginBottom: 16 }}>{t.resOrWA}</p>
             <a href={`https://wa.me/905400070095?text=${t.waText}`} target="_blank" rel="noreferrer"
               style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "#25d366", color: "#fff", textDecoration: "none", borderRadius: 8, padding: "13px 28px", fontWeight: 700, fontSize: 15 }}>
@@ -1123,15 +1163,15 @@ export default function App() {
 
       {/* TERMS */}
       {page === "terms" && (
-        <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
-          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>{t.termsTitle}</h1>
-          <p style={{ color: "#888", marginBottom: 40 }}>{t.termsSub}</p>
+        <div className="page-pad" style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: "clamp(22px,4vw,30px)", fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>{t.termsTitle}</h1>
+          <p style={{ color: "#888", marginBottom: 32 }}>{t.termsSub}</p>
           {t.terms.map((item, i) => (
-            <div key={i} style={{ borderBottom: "1px solid #eee", paddingBottom: 24, marginBottom: 24, display: "flex", gap: 20 }}>
-              <div style={{ fontSize: 36, flexShrink: 0, width: 50, textAlign: "center" }}>{item.icon}</div>
+            <div key={i} style={{ borderBottom: "1px solid #eee", paddingBottom: 20, marginBottom: 20, display: "flex", gap: 16 }}>
+              <div style={{ fontSize: 32, flexShrink: 0 }}>{item.icon}</div>
               <div>
-                <h3 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 17, fontWeight: 800, color: "#1a5c2a", marginBottom: 8 }}>{item.title}</h3>
-                <p style={{ fontSize: 15, color: "#555", lineHeight: 1.7 }}>{item.text}</p>
+                <h3 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 16, fontWeight: 800, color: "#1a5c2a", marginBottom: 6 }}>{item.title}</h3>
+                <p style={{ fontSize: 14, color: "#555", lineHeight: 1.7 }}>{item.text}</p>
               </div>
             </div>
           ))}
@@ -1140,59 +1180,58 @@ export default function App() {
 
       {/* PRIVACY */}
       {page === "privacy" && (
-        <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
-          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>{t.privacyTitle}</h1>
-          <p style={{ color: "#888", marginBottom: 40 }}>{ lang==="ru"?"Последнее обновление: апрель 2026":lang==="tr"?"Son güncelleme: Nisan 2026":"Last updated: April 2026"}</p>
+        <div className="page-pad" style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: "clamp(22px,4vw,30px)", fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>{t.privacyTitle}</h1>
+          <p style={{ color: "#888", marginBottom: 32 }}>{lang==="ru"?"Последнее обновление: апрель 2026":lang==="tr"?"Son güncelleme: Nisan 2026":"Last updated: April 2026"}</p>
           {(lang==="ru"?[
-            { title: "Какие данные мы собираем", text: "Имя и фамилия, телефон, email, номер рейса (по желанию), информация об аренде. Данные собираются только при заполнении формы." },
-            { title: "Как мы используем данные", text: "Только для обработки запроса, связи по вопросам бронирования и отправки подтверждения. Без маркетинговых рассылок без согласия." },
-            { title: "Передача третьим лицам", text: "Данные не продаются и не передаются третьим лицам. Исключение — требования законодательства Турции." },
-            { title: "Хранение данных", text: "Данные хранятся на защищённых серверах с шифрованием. Не дольше, чем необходимо." },
+            { title: "Какие данные мы собираем", text: "Имя и фамилия, телефон, email, номер рейса (по желанию). Данные собираются только при заполнении формы." },
+            { title: "Как мы используем данные", text: "Только для обработки запроса, связи по вопросам бронирования и отправки подтверждения." },
+            { title: "Передача третьим лицам", text: "Данные не продаются и не передаются третьим лицам." },
+            { title: "Хранение данных", text: "Данные хранятся на защищённых серверах с шифрованием." },
             { title: "Ваши права", text: "Вы можете запросить доступ, исправление или удаление данных. Пишите на info@localrent.com.tr." },
           ]:lang==="tr"?[
             { title: "Hangi verileri topluyoruz", text: "Ad, soyad, telefon, e-posta, uçuş numarası (isteğe bağlı). Yalnızca form doldurulduğunda." },
-            { title: "Verileri nasıl kullanıyoruz", text: "Yalnızca talebi işlemek, rezervasyon iletişimi ve onay göndermek için. İzinsiz pazarlama yok." },
-            { title: "Üçüncü taraflara aktarım", text: "Veriler satılmaz veya paylaşılmaz. Türk mevzuatı gerektirmedikçe." },
-            { title: "Veri saklama", text: "Şifreli sunucularda, hizmet için gerekli süre kadar saklanır." },
-            { title: "Haklarınız", text: "Verilere erişim, düzeltme veya silme talep edebilirsiniz. info@localrent.com.tr" },
+            { title: "Verileri nasıl kullanıyoruz", text: "Yalnızca talebi işlemek ve rezervasyon iletişimi için." },
+            { title: "Üçüncü taraflara aktarım", text: "Veriler satılmaz veya paylaşılmaz." },
+            { title: "Veri saklama", text: "Şifreli sunucularda saklanır." },
+            { title: "Haklarınız", text: "Erişim, düzeltme veya silme: info@localrent.com.tr" },
           ]:[
             { title: "What data we collect", text: "Name, phone, email, flight number (optional). Only collected when the form is submitted." },
-            { title: "How we use your data", text: "Only to process your request, contact you about booking and send confirmation. No marketing without consent." },
-            { title: "Third party sharing", text: "Data is not sold or shared. Exception: Turkish legal requirements." },
-            { title: "Data storage", text: "Stored on encrypted servers for as long as necessary." },
-            { title: "Your rights", text: "You can request access, correction or deletion. Email: info@localrent.com.tr" },
+            { title: "How we use your data", text: "Only to process your request and contact you about booking." },
+            { title: "Third party sharing", text: "Data is not sold or shared." },
+            { title: "Data storage", text: "Stored on encrypted servers." },
+            { title: "Your rights", text: "Access, correction or deletion: info@localrent.com.tr" },
           ]).map((item, i) => (
-            <div key={i} style={{ borderBottom: "1px solid #eee", paddingBottom: 24, marginBottom: 24 }}>
-              <h3 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 17, fontWeight: 800, color: "#1a5c2a", marginBottom: 8 }}>{i+1}. {item.title}</h3>
-              <p style={{ fontSize: 15, color: "#555", lineHeight: 1.7 }}>{item.text}</p>
+            <div key={i} style={{ borderBottom: "1px solid #eee", paddingBottom: 20, marginBottom: 20 }}>
+              <h3 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 16, fontWeight: 800, color: "#1a5c2a", marginBottom: 8 }}>{i+1}. {item.title}</h3>
+              <p style={{ fontSize: 14, color: "#555", lineHeight: 1.7 }}>{item.text}</p>
             </div>
           ))}
         </div>
       )}
 
-      {/* COOKIES, USAGE, DATAPROTECTION - simplified */}
       {["cookies","usage","dataprotection"].map(pg => page === pg && (
-        <div key={pg} style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
-          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 30, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>
+        <div key={pg} className="page-pad" style={{ maxWidth: 860, margin: "0 auto", padding: "40px 48px" }}>
+          <h1 style={{ fontFamily: "Montserrat,sans-serif", fontSize: "clamp(22px,4vw,30px)", fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>
             {pg==="cookies"?t.cookiesTitle:pg==="usage"?t.usageTitle:t.dataTitle}
           </h1>
-          <p style={{ color: "#888", marginBottom: 40 }}>{lang==="ru"?"Последнее обновление: апрель 2026":lang==="tr"?"Son güncelleme: Nisan 2026":"Last updated: April 2026"}</p>
+          <p style={{ color: "#888", marginBottom: 32 }}>{lang==="ru"?"Последнее обновление: апрель 2026":lang==="tr"?"Son güncelleme: Nisan 2026":"Last updated: April 2026"}</p>
           <p style={{ fontSize: 15, color: "#555", lineHeight: 1.8 }}>
             {pg==="cookies"
-              ? (lang==="ru"?"Мы используем cookies для анализа трафика и улучшения сайта. Вы можете отключить их в настройках браузера.":lang==="tr"?"Site trafiğini analiz etmek ve iyileştirmek için çerezler kullanıyoruz. Tarayıcı ayarlarından devre dışı bırakabilirsiniz.":"We use cookies to analyze traffic and improve the site. You can disable them in your browser settings.")
+              ? (lang==="ru"?"Мы используем cookies для анализа трафика и улучшения сайта.":lang==="tr"?"Site trafiğini analiz etmek için çerezler kullanıyoruz.":"We use cookies to analyze traffic and improve the site.")
               : pg==="usage"
-              ? (lang==="ru"?"Используя сайт localrent.com.tr, вы соглашаетесь с данными условиями. Все материалы защищены авторским правом. Условия регулируются законодательством Турции.":lang==="tr"?"localrent.com.tr sitesini kullanarak bu koşulları kabul etmiş sayılırsınız. Tüm içerikler telif hakkıyla korunmaktadır. Türk hukuku geçerlidir.":"By using localrent.com.tr you agree to these terms. All content is copyright protected. Governed by Turkish law.")
-              : (lang==="ru"?"Обработка персональных данных осуществляется в соответствии с Законом о защите персональных данных Турции (KVKK № 6698). Вы имеете право на доступ, исправление и удаление ваших данных.":lang==="tr"?"Kişisel veriler, Türkiye Kişisel Verilerin Korunması Kanunu (KVKK No. 6698) kapsamında işlenmektedir. Verilerinize erişim, düzeltme ve silme hakkına sahipsiniz.":"Personal data is processed in accordance with Turkish Personal Data Protection Law (KVKK No. 6698). You have the right to access, correct and delete your data.")}
+              ? (lang==="ru"?"Используя сайт localrent.com.tr, вы соглашаетесь с данными условиями. Условия регулируются законодательством Турции.":lang==="tr"?"localrent.com.tr sitesini kullanarak bu koşulları kabul etmiş sayılırsınız. Türk hukuku geçerlidir.":"By using localrent.com.tr you agree to these terms. Governed by Turkish law.")
+              : (lang==="ru"?"Обработка персональных данных осуществляется в соответствии с Законом о защите персональных данных Турции (KVKK № 6698).":lang==="tr"?"Kişisel veriler, KVKK No. 6698 kapsamında işlenmektedir.":"Personal data is processed in accordance with Turkish KVKK No. 6698.")}
           </p>
         </div>
       ))}
 
       {/* CARS */}
       {page === "cars" && (
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 48px" }}>
-          <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 28, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>{t.carsPageTitle}</h2>
-          <p style={{ color: "#888", marginBottom: 32 }}>{t.carsPageSub}</p>
-          <div className="cars-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
+        <div className="page-pad" style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 48px" }}>
+          <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: "clamp(22px,4vw,28px)", fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>{t.carsPageTitle}</h2>
+          <p style={{ color: "#888", marginBottom: 28 }}>{t.carsPageSub}</p>
+          <div className="cars-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
             {cars.map(car => <CarCard key={car.id} car={car} />)}
           </div>
         </div>
@@ -1200,23 +1239,23 @@ export default function App() {
 
       {/* EXTRAS */}
       {page === "extras" && selectedCar && (
-        <div style={{ maxWidth: 900, margin: "0 auto", padding: "40px 48px" }}>
+        <div className="page-pad" style={{ maxWidth: 900, margin: "0 auto", padding: "40px 48px" }}>
           <div className="step-bar">
             {t.steps.map((s, i) => (
               <div key={s} className={`step ${i === 1 ? "active" : i < 1 ? "done-step" : ""}`}>{i < 1 ? "✓ " : ""}{s}</div>
             ))}
           </div>
-          <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 24, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>{t.extrasTitle}</h2>
-          <p style={{ color: "#888", marginBottom: 28 }}>{t.extrasSub}</p>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: 32 }}>
+          <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 22, fontWeight: 900, color: "#1a5c2a", marginBottom: 8 }}>{t.extrasTitle}</h2>
+          <p style={{ color: "#888", marginBottom: 24 }}>{t.extrasSub}</p>
+          <div className="extras-layout" style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: 28 }}>
             <div>
-              <div className="extras-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 28 }}>
+              <div className="extras-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 24 }}>
                 {extrasList.map(ex => (
                   <div key={ex.id} className={`extra-card ${selectedExtras.includes(ex.id) ? "sel-extra" : ""}`}
                     onClick={() => setSelectedExtras(p => p.includes(ex.id) ? p.filter(x => x !== ex.id) : [...p, ex.id])}>
-                    <div style={{ fontSize: 32, marginBottom: 8 }}>{ex.icon}</div>
-                    <div style={{ fontWeight: 700, marginBottom: 4 }}>{ex.name}</div>
-                    <div style={{ color: "#2d8a47", fontWeight: 600, fontSize: 13 }}>
+                    <div style={{ fontSize: 28, marginBottom: 6 }}>{ex.icon}</div>
+                    <div style={{ fontWeight: 700, marginBottom: 4, fontSize: 14 }}>{ex.name}</div>
+                    <div style={{ color: "#2d8a47", fontWeight: 600, fontSize: 12 }}>
                       {selectedExtras.includes(ex.id) ? t.extrasAdded : t.extrasAdd}
                     </div>
                   </div>
@@ -1225,14 +1264,14 @@ export default function App() {
               <button className="green-btn" style={{ width: "100%" }} onClick={() => goTo("booking")}>{t.extrasContinue}</button>
             </div>
             <div className="info-box">
-              <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 16, color: "#1a5c2a" }}>{t.extrasRequest}</div>
-              <img src={selectedCar.image} alt={selectedCar.name} style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 8, marginBottom: 14 }} onError={e => e.target.style.display="none"} />
+              <div style={{ fontWeight: 800, fontSize: 15, marginBottom: 14, color: "#1a5c2a" }}>{t.extrasRequest}</div>
+              <img src={selectedCar.image} alt={selectedCar.name} style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 8, marginBottom: 12, display: "block" }} onError={e => e.target.style.display="none"} />
               <div style={{ fontWeight: 700, marginBottom: 4 }}>{selectedCar.name}</div>
               <div style={{ fontSize: 13, color: "#888", marginBottom: 4 }}>{selectedCar.category[lang]} · {selectedCar.transmission[lang]}</div>
-              <div style={{ fontSize: 16, fontWeight: 800, color: "#2d8a47", marginBottom: 14 }}>${selectedCar.price}{t.perDay}</div>
+              <div style={{ fontSize: 16, fontWeight: 800, color: "#2d8a47", marginBottom: 12 }}>${selectedCar.price}{t.perDay}</div>
               {days && <div style={{ fontSize: 13, color: "#666", marginBottom: 4 }}>🗓 {days} {days === 1 ? t.day : t.days}</div>}
               {search.pickup && <div style={{ fontSize: 13, color: "#666", marginBottom: 4 }}>📍 {search.pickup}</div>}
-              <div style={{ borderTop: "1px solid #d0eeda", marginTop: 14, paddingTop: 14, background: "#f0f9f3", borderRadius: 8, padding: 12, textAlign: "center" }}>
+              <div style={{ borderTop: "1px solid #d0eeda", marginTop: 12, paddingTop: 12, background: "#f0f9f3", borderRadius: 8, padding: 10, textAlign: "center" }}>
                 <div style={{ fontSize: 12, color: "#2d8a47", fontWeight: 700 }}>{t.extrasPrice}</div>
               </div>
             </div>
@@ -1242,24 +1281,24 @@ export default function App() {
 
       {/* BOOKING */}
       {page === "booking" && selectedCar && (
-        <div style={{ maxWidth: 900, margin: "0 auto", padding: "40px 48px" }}>
+        <div className="page-pad" style={{ maxWidth: 900, margin: "0 auto", padding: "40px 48px" }}>
           <div className="step-bar">
             {t.steps.map((s, i) => (
               <div key={s} className={`step ${i === 2 ? "active" : i < 2 ? "done-step" : ""}`}>{i < 2 ? "✓ " : ""}{s}</div>
             ))}
           </div>
-          <div className="booking-grid" style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: 32 }}>
+          <div className="booking-grid" style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: 28 }}>
             <div>
-              <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 22, fontWeight: 900, color: "#1a5c2a", marginBottom: 24 }}>{t.bookingTitle}</h2>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              <h2 style={{ fontFamily: "Montserrat,sans-serif", fontSize: 20, fontWeight: 900, color: "#1a5c2a", marginBottom: 20 }}>{t.bookingTitle}</h2>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
                 {t.bookingFields.map(([label, key, ph]) => (
                   <div key={key} style={{ gridColumn: key === "flight" ? "1/-1" : "auto" }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>{label}</div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>{label}</div>
                     <input aria-label={label} placeholder={ph} value={form[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} className="sel" />
                   </div>
                 ))}
                 <div style={{ gridColumn: "1/-1" }}>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>{t.bookingNotes}</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "#2d8a47", marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>{t.bookingNotes}</div>
                   <textarea aria-label={t.bookingNotes} placeholder={t.bookingNotesPh} value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} className="sel" style={{ resize: "vertical", minHeight: 80 }} />
                 </div>
               </div>
@@ -1270,15 +1309,15 @@ export default function App() {
                   sendEmail(selectedCar, resNo);
                   setDone(true);
                 }}
-                style={{ width: "100%", marginTop: 24, padding: 16, fontSize: 16, background: form.name && form.email && form.phone ? "#2d8a47" : "#ccc", color: "#fff", border: "none", borderRadius: 8, fontFamily: "Nunito,sans-serif", fontWeight: 700, cursor: form.name && form.email && form.phone ? "pointer" : "not-allowed" }}>
+                style={{ width: "100%", marginTop: 20, padding: 14, fontSize: 15, background: form.name && form.email && form.phone ? "#2d8a47" : "#ccc", color: "#fff", border: "none", borderRadius: 8, fontFamily: "Nunito,sans-serif", fontWeight: 700, cursor: form.name && form.email && form.phone ? "pointer" : "not-allowed" }}>
                 {t.bookingSubmit}
               </button>
             </div>
             <div className="info-box" style={{ height: "fit-content" }}>
-              <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 14, color: "#1a5c2a" }}>{t.bookingDetails}</div>
-              <div style={{ fontWeight: 700, fontSize: 16 }}>{selectedCar.name}</div>
-              <div style={{ fontSize: 13, color: "#888", marginBottom: 8 }}>{selectedCar.category[lang]} · {selectedCar.transmission[lang]}</div>
-              <div style={{ fontSize: 16, fontWeight: 800, color: "#2d8a47", marginBottom: 12 }}>${selectedCar.price}{t.perDay}</div>
+              <div style={{ fontWeight: 800, fontSize: 15, marginBottom: 12, color: "#1a5c2a" }}>{t.bookingDetails}</div>
+              <div style={{ fontWeight: 700, fontSize: 15 }}>{selectedCar.name}</div>
+              <div style={{ fontSize: 13, color: "#888", marginBottom: 6 }}>{selectedCar.category[lang]} · {selectedCar.transmission[lang]}</div>
+              <div style={{ fontSize: 16, fontWeight: 800, color: "#2d8a47", marginBottom: 10 }}>${selectedCar.price}{t.perDay}</div>
               {search.pickup && <div style={{ fontSize: 13, marginBottom: 4 }}>📍 {search.pickup}</div>}
               {search.pickupDate && <div style={{ fontSize: 13, marginBottom: 4 }}>📅 {search.pickupDate} — {search.pickupTime}</div>}
               {search.returnDate && <div style={{ fontSize: 13, marginBottom: 4 }}>🔄 {search.returnDate} — {search.returnTime}</div>}
@@ -1286,7 +1325,7 @@ export default function App() {
               {selectedExtras.length > 0 && (
                 <div style={{ fontSize: 13, marginBottom: 4 }}>➕ {selectedExtras.map(id => extrasList.find(e => e.id === id)?.name).join(", ")}</div>
               )}
-              <div style={{ borderTop: "1px solid #d0eeda", marginTop: 14, paddingTop: 14, background: "#f0f9f3", borderRadius: 8, padding: 12, textAlign: "center" }}>
+              <div style={{ borderTop: "1px solid #d0eeda", marginTop: 12, paddingTop: 12, background: "#f0f9f3", borderRadius: 8, padding: 10, textAlign: "center" }}>
                 <div style={{ fontSize: 12, color: "#2d8a47", fontWeight: 700 }}>{t.bookingAnswer}</div>
               </div>
             </div>
