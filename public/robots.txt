@@ -1,3 +1,7 @@
 User-agent: *
 Allow: /
-Sitemap: https://localrent.com.tr/sitemap.xml
+
+Disallow: /admin
+Disallow: /admin.html
+
+Sitemap: https://www.localrent.com.tr/sitemap.xml
