@@ -560,14 +560,21 @@ export default function App() {
   };
 
   useEffect(() => {
-    const onPop = (e) => {
-      if (e.state?.page) setPage(e.state.page);
-      else setPage("home");
-    };
-    window.addEventListener("popstate", onPop);
-    window.history.replaceState({ page: "home" }, "", "/");
-    return () => window.removeEventListener("popstate", onPop);
-  }, []);
+  const onPop = (e) => {
+    if (e.state?.page) setPage(e.state.page);
+    else setPage("home");
+  };
+  window.addEventListener("popstate", onPop);
+  
+  // Sayfa yenilendiğinde URL'den sayfayı oku
+  const path = window.location.pathname.replace("/", "").trim();
+  if (path && path !== "") {
+    setPage(path);
+  }
+  
+  window.history.replaceState({ page: path || "home" }, "", window.location.pathname);
+  return () => window.removeEventListener("popstate", onPop);
+}, []);
 
   const navPages = [["cars"], ["locations"], ["terms"], ["reservation"], ["blog"], ["faq"], ["about"], ["contact"]];
 
